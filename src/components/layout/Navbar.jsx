@@ -118,11 +118,11 @@ export default function Navbar() {
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 10, scale: 0.97 }}
                           transition={{ duration: 0.18, ease: [0.25, 0.1, 0.25, 1] }}
-                          className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[800px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl overflow-hidden"
+                          className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[1000px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl overflow-hidden"
                         >
                           <div className="flex">
                             {/* Brand sidebar */}
-                            <div className="w-[180px] bg-gray-50/80 dark:bg-gray-900/80 border-r border-gray-200 dark:border-gray-800 p-3 flex flex-col gap-1">
+                            <div className="w-[220px] bg-gray-50/80 dark:bg-gray-900/80 border-r border-gray-200 dark:border-gray-800 p-3 flex flex-col gap-1">
                               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-2 mb-2">Brands</p>
                               {brands.map((brand) => (
                                 <button
@@ -137,7 +137,7 @@ export default function Navbar() {
                                   <img
                                     src={logoMap[brand.id]}
                                     alt={brand.shortName}
-                                    className="h-5 w-10 object-contain flex-shrink-0 filter grayscale dark:brightness-0 dark:invert"
+                                    className="h-7 w-auto object-contain flex-shrink-0 filter grayscale dark:brightness-0 dark:invert"
                                     onError={(e) => { e.target.style.display = 'none'; }}
                                   />
                                   <span className={`text-xs font-semibold truncate ${
@@ -177,8 +177,8 @@ export default function Navbar() {
                                       to={`/products/${activeBrand}/${cat.slug}`}
                                       className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors group"
                                     >
-                                      <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0 group-hover:bg-accent/20 transition-colors">
-                                        <Icon className="w-3.5 h-3.5 text-accent" />
+                                      <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0 group-hover:bg-accent/20 transition-colors">
+                                        <Icon className="w-4.5 h-4.5 text-accent" />
                                       </div>
                                       <div>
                                         <p className="text-xs font-semibold text-gray-900 dark:text-white group-hover:text-accent transition-colors leading-tight">

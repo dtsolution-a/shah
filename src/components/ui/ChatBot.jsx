@@ -143,9 +143,9 @@ export default function ChatBot() {
             transition={{ delay: 3, type: 'spring', stiffness: 260, damping: 20 }}
             onClick={() => setOpen(true)}
             aria-label="Open FAQ chat"
-            className="fixed bottom-24 right-6 z-50 group"
+            className="fixed bottom-[10.5rem] right-6 z-50 group"
           >
-            <div className="relative w-13 h-13 w-[52px] h-[52px] rounded-full bg-gray-900 dark:bg-white shadow-xl flex items-center justify-center hover:scale-110 transition-all duration-200 border border-gray-700 dark:border-gray-200">
+            <div className="relative w-[52px] h-[52px] rounded-full bg-gray-900 dark:bg-white shadow-xl flex items-center justify-center hover:scale-110 transition-all duration-200 border border-gray-700 dark:border-gray-200">
               <Bot className="w-5 h-5 text-white dark:text-gray-900" />
               {/* Unread dot */}
               <span className="absolute top-0 right-0 w-3 h-3 rounded-full bg-accent border-2 border-white dark:border-gray-900" />

@@ -3,6 +3,7 @@ import Hero from '../components/sections/Hero';
 import BrandBar from '../components/sections/BrandBar';
 import AboutSnapshot from '../components/sections/AboutSnapshot';
 import ProductCategories from '../components/sections/ProductCategories';
+import BrandSlider from '../components/sections/BrandSlider';
 import WhyShah from '../components/sections/WhyShah';
 import StatsSection from '../components/sections/StatsSection';
 import CTASection from '../components/sections/CTASection';
@@ -21,6 +22,7 @@ export default function Home() {
         <Hero />
         <BrandBar />
         <ProductCategories />
+        <BrandSlider />
         <AboutSnapshot />
         <WhyShah />
         <StatsSection />

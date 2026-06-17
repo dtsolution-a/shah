@@ -63,7 +63,7 @@ function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
-      className="fixed bottom-6 right-6 z-50 group"
+      className="fixed bottom-[7rem] right-6 z-50 group"
     >
       <motion.div
         initial={{ scale: 0, opacity: 0 }}
@@ -74,7 +74,7 @@ function WhatsAppButton() {
         {/* Pulse ring */}
         <span className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-30" />
         {/* Button */}
-        <div className="relative w-14 h-14 rounded-full bg-green-500 hover:bg-green-600 shadow-lg shadow-green-500/40 flex items-center justify-center transition-all duration-200 hover:scale-110">
+        <div className="relative w-[52px] h-[52px] rounded-full bg-green-500 hover:bg-green-600 shadow-lg shadow-green-500/40 flex items-center justify-center transition-all duration-200 hover:scale-110">
           {/* WhatsApp SVG icon */}
           <svg viewBox="0 0 32 32" className="w-7 h-7 fill-white" xmlns="http://www.w3.org/2000/svg">
             <path d="M16.003 2.667C8.639 2.667 2.667 8.639 2.667 16c0 2.347.636 4.548 1.742 6.448L2.667 29.333l7.107-1.718A13.283 13.283 0 0016.003 29.333C23.367 29.333 29.333 23.361 29.333 16S23.367 2.667 16.003 2.667zm0 2.4c5.93 0 10.93 4.997 10.93 10.933s-5 10.933-10.93 10.933c-1.99 0-3.854-.546-5.455-1.497l-.39-.23-4.218 1.02 1.054-4.085-.252-.408A10.898 10.898 0 015.07 16c0-5.936 4.997-10.933 10.933-10.933zm-3.12 5.2c-.22 0-.578.082-.88.41-.302.327-1.154 1.127-1.154 2.75s1.182 3.189 1.346 3.41c.165.22 2.32 3.548 5.634 4.836 2.796 1.094 3.314.876 3.91.82.595-.054 1.922-.786 2.195-1.545.273-.76.273-1.41.191-1.545-.082-.135-.3-.218-.627-.382s-1.923-.95-2.223-1.059c-.3-.11-.518-.164-.736.165-.218.327-.844 1.06-.953 1.278-.11.218-.22.246-.546.082-.328-.164-1.38-.509-2.632-1.622-.972-.866-1.629-1.935-1.82-2.262-.19-.327-.02-.505.145-.668.148-.147.327-.382.49-.573.165-.191.22-.327.33-.546.11-.218.055-.41-.027-.573-.082-.164-.736-1.775-1.009-2.43-.273-.655-.546-.56-.737-.57l-.627-.01z"/>
@@ -110,7 +110,7 @@ function ScrollToTopBtn() {
           transition={{ duration: 0.2 }}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           aria-label="Scroll to top"
-          className="fixed bottom-24 right-6 z-50 w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-accent hover:text-white hover:border-accent transition-all duration-200"
+          className="fixed bottom-[14rem] right-6 z-50 w-[52px] h-[52px] rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-accent hover:text-white hover:border-accent transition-all duration-200"
         >
           <ArrowUp className="w-4 h-4" />
         </motion.button>

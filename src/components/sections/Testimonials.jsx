@@ -151,7 +151,7 @@ export default function Testimonials() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
-                className="relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-soft overflow-hidden"
+                className="relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-soft overflow-hidden pb-24"
               >
                 {/* Background accent */}
                 <div
@@ -174,20 +174,22 @@ export default function Testimonials() {
                 </blockquote>
 
                 {/* Author */}
-                <div className="mt-8 flex items-center gap-4">
-                  <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-                    style={{ background: t.color }}
-                  >
-                    {t.avatar}
+                <div className="mt-8">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+                      style={{ background: t.color }}
+                    >
+                      {t.avatar}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-bold text-gray-900 dark:text-white">{t.name}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{t.title}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-bold text-gray-900 dark:text-white">{t.name}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t.title} · {t.company}</p>
-                  </div>
-                  <div className="ml-auto">
+                  <div className="mt-4">
                     <span
-                      className="px-3 py-1 rounded-full text-[11px] font-semibold"
+                      className="inline-flex px-3 py-1 rounded-full text-[11px] font-semibold"
                       style={{ background: `${t.color}15`, color: t.color }}
                     >
                       {t.industry}
@@ -196,7 +198,7 @@ export default function Testimonials() {
                 </div>
 
                 {/* Nav arrows */}
-                <div className="absolute bottom-8 right-8 flex gap-2">
+                <div className="absolute bottom-8 right-6 flex gap-2 z-30">
                   <button
                     onClick={() => go(-1)}
                     className="w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
@@ -212,7 +214,7 @@ export default function Testimonials() {
                 </div>
 
                 {/* Progress dots */}
-                <div className="absolute bottom-9 left-8 flex gap-1.5">
+                <div className="absolute bottom-6 left-6 flex gap-1.5 z-20">
                   {testimonials.map((_, i) => (
                     <button
                       key={i}
@@ -255,7 +257,7 @@ export default function Testimonials() {
                       <p className="font-semibold text-gray-900 dark:text-white text-sm truncate">{review.name}</p>
                       <StarRating rating={review.rating} />
                     </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-2 truncate">{review.title} · {review.company}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-2 truncate">{review.title}</p>
                     <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-2">
                       "{review.review}"
                     </p>
