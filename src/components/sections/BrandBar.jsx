@@ -94,8 +94,8 @@ export default function BrandBar() {
                     <img
                       src={brand.logo}
                       alt={`${brand.name} logo`}
-                      className={`max-w-full object-contain transition-all duration-300
-                        ${brand.isSvg ? 'filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100' : 'filter grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100'}
+                      className={`max-w-full object-contain transition-all duration-300 opacity-100
+                        ${brand.isSvg ? 'group-hover:opacity-100' : 'group-hover:opacity-100'}
                         ${brand.id === 'tubacex' ? 'max-h-14' : 'max-h-12'}
                       `}
                       onError={(e) => {

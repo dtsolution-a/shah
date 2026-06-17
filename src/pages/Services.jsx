@@ -154,7 +154,96 @@ export default function Services() {
         </div>
       </section>
 
-      {/* Industries served */}
+      {/* CNG Dispenser Services */}
+      <section className="section-padding">
+        <div className="container-wide">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            {/* Text */}
+            <motion.div
+              initial={{ opacity: 0, x: -24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <p className="badge-blue mb-4">Specialized Services</p>
+              <h2 className="heading-display text-[clamp(1.8rem,3.5vw,2.8rem)] text-gray-900 dark:text-white mb-5">
+                CNG Dispenser Services
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+                As pioneers in clean energy infrastructure, SECPL delivers specialized services for CNG dispensers that guarantee accuracy, compliance, and operational excellence. Our offerings include calibration, troubleshooting, upgrades, and routine maintenance, all designed to keep fueling stations running smoothly and efficiently. Complementing this, we provide precision high-pressure tubing services, ensuring safe and reliable gas flow management across dispenser systems. With a focus on engineering excellence and customer satisfaction, SECPL empowers businesses to meet the rising demand for eco-friendly fuel solutions with confidence, efficiency, and long-term dependability.
+              </p>
+              <div className="space-y-3">
+                {['Calibration & accuracy verification', 'Troubleshooting & system upgrades', 'Routine maintenance programs', 'High-pressure tubing services', 'Compliance & safety audits'].map((item) => (
+                  <div key={item} className="flex items-center gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    <span className="text-sm text-gray-700 dark:text-gray-300">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+            {/* Image */}
+            <motion.div
+              initial={{ opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="rounded-2xl overflow-hidden shadow-lg"
+            >
+              <img
+                src="/images/service/cng.jpeg"
+                alt="CNG Dispenser Services"
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Compressor Services */}
+      <section className="section-padding bg-gray-50 dark:bg-gray-900/30">
+        <div className="container-wide">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            {/* Image */}
+            <motion.div
+              initial={{ opacity: 0, x: -24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="rounded-2xl overflow-hidden shadow-lg order-2 lg:order-1"
+            >
+              <img
+                src="/images/service/compressor.jpeg"
+                alt="Compressor Services"
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+            {/* Text */}
+            <motion.div
+              initial={{ opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="order-1 lg:order-2"
+            >
+              <p className="badge-blue mb-4">Specialized Services</p>
+              <h2 className="heading-display text-[clamp(1.8rem,3.5vw,2.8rem)] text-gray-900 dark:text-white mb-5">
+                Compressor Services
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+                SECPL has built a reputation as a trusted partner in compressor solutions, offering comprehensive services that go beyond routine maintenance. Our expertise covers installation, commissioning, preventive care, and emergency support, ensuring that every compressor system delivers maximum efficiency and reliability. In addition, we specialize in industrial air piping services, providing seamless integration of compressor units into complex plant layouts. By combining technical precision with best-practice optimization strategies, SECPL helps clients reduce downtime, extend equipment life, and achieve measurable cost savings while maintaining the highest standards of safety and performance.
+              </p>
+              <div className="space-y-3">
+                {['Installation & commissioning', 'Preventive maintenance programs', 'Emergency breakdown support', 'Industrial air piping services', 'Performance optimization consulting'].map((item) => (
+                  <div key={item} className="flex items-center gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    <span className="text-sm text-gray-700 dark:text-gray-300">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
       <section className="section-padding bg-gray-50 dark:bg-gray-900/30">
         <div className="container-wide">
           <motion.div

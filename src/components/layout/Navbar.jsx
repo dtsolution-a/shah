@@ -77,7 +77,7 @@ export default function Navbar() {
       {/* ── Main nav ── */}
       <header className={`sticky top-0 z-50 transition-all duration-300
         ${isScrolled
-          ? 'bg-white/94 dark:bg-gray-950/94 backdrop-blur-xl border-b border-gray-200/60 dark:border-gray-800/60 shadow-sm'
+          ? 'bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 shadow-sm'
           : 'bg-white dark:bg-gray-950 border-b border-gray-200/50 dark:border-gray-800/50'
         }`}
       >
@@ -90,7 +90,7 @@ export default function Navbar() {
               <img
                 src="/images/shah-logo.png"
                 alt="Shah Engineers & Consultants Pvt. Ltd."
-                className="h-11 w-auto object-contain transition-all duration-300 dark:brightness-0 dark:invert"
+                className="h-14 w-auto object-contain transition-all duration-300 dark:brightness-0 dark:invert"
               />
             </Link>
 
@@ -133,12 +133,6 @@ export default function Navbar() {
                                       : 'hover:bg-white/70 dark:hover:bg-gray-800/60'
                                   }`}
                                 >
-                                  <img
-                                    src={logoMap[brand.id]}
-                                    alt={brand.shortName}
-                                    className="h-7 w-auto object-contain flex-shrink-0 filter grayscale dark:brightness-0 dark:invert"
-                                    onError={(e) => { e.target.style.display = 'none'; }}
-                                  />
                                   <span className={`text-xs font-semibold truncate ${
                                     activeBrand === brand.id ? 'text-accent' : 'text-gray-600 dark:text-gray-400'
                                   }`}>
