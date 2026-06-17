@@ -143,9 +143,8 @@ export default function Footer() {
                   className="w-9 h-9 rounded-xl border border-gray-800 flex items-center justify-center text-gray-500 hover:text-white hover:border-gray-600 transition-all duration-200"
                   aria-label="WhatsApp"
                 >
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20.52 3.48A11.86 11.86 0 0 0 12 0C5.37 0 .04 5.34.04 12c0 2.11.55 4.18 1.59 6.01L0 24l6.34-1.66A11.92 11.92 0 0 0 12 24c6.63 0 12-5.38 12-12 0-1.97-.48-3.83-1.48-5.52zM12 21.5c-1.6 0-3.16-.42-4.52-1.22l-.32-.19-3.76.98.97-3.66-.2-.37A9.5 9.5 0 0 1 2.5 12C2.5 6.2 6.7 2 12 2c1.96 0 3.8.56 5.36 1.6A9.44 9.44 0 0 1 21.5 12c0 5.3-4.2 9.5-9.5 9.5z" />
-                    <path d="M17.5 14.2c-.2-.1-1.2-.6-1.4-.7-.2-.1-.3-.1-.5.1-.2.2-.6.7-.8.9-.2.2-.4.2-.6.1-.7-.2-2.3-.9-3.8-2.4-1.4-1.4-2.1-3-2.4-3.7-.1-.2 0-.4.1-.6.1-.2.5-1.2.7-1.4.2-.2.3-.3.5-.3.1 0 .2 0 .4 0 .1 0 .3.1.5.3.1.1.5.6.7.9.2.3.3.4.5.6.2.2.3.3.5.3.2 0 .4-.1.6-.1.2-.1 1.1-.5 1.4-.6.3-.1.5-.1.8 0 .3.1 1 .4 1.2.5.2.1.3.2.4.4.1.2.1.4.1.6 0 .2 0 .4-.1.6-.1.2-.5.7-.8 1-.3.3-.6.6-.8.8-.2.2-.3.4-.2.6.1.2.3.5.6.9.4.5.8.9.9 1 .1.1.2.2.2.3.1.2.1.4 0 .6-.1.2-.4.4-.8.2z" />
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                   </svg>
                 </a>
               </div>

@@ -16,7 +16,6 @@ const navItems = [
   { label: 'Services', href: '/services' },
   { label: 'Gallery', href: '/gallery' },
   { label: 'Career', href: '/career' },
-  { label: 'Contact', href: '/contact' },
 ];
 
 const iconMap = { Wind, Settings2, Gauge, Cable, Filter, Zap, Leaf, Layers, Star };
@@ -222,7 +221,7 @@ export default function Navbar() {
                 {isDark ? <Sun className="w-[18px] h-[18px]" /> : <Moon className="w-[18px] h-[18px]" />}
               </button>
               <Link to="/contact" className="hidden lg:inline-flex btn-primary text-sm px-5 py-2.5">
-                Get a Quote
+                Contact Us
               </Link>
               <button
                 onClick={() => setIsOpen(!isOpen)}
@@ -260,7 +259,7 @@ export default function Navbar() {
                   </NavLink>
                 ))}
                 <div className="pt-3 mt-2 border-t border-gray-200 dark:border-gray-800 space-y-2">
-                  <Link to="/contact" className="btn-primary w-full justify-center">Get a Quote</Link>
+                  <Link to="/contact" className="btn-primary w-full justify-center">Contact Us</Link>
                   <div className="flex flex-col gap-2 text-xs text-gray-500 pt-1">
                     <a href="tel:+919898989898" className="flex items-center gap-2 px-1"><Phone className="w-3.5 h-3.5" /> +91 98980 00000</a>
                     <a href="mailto:shahgroupsurat@gmail.com" className="flex items-center gap-2 px-1"><Mail className="w-3.5 h-3.5" /> shahgroupsurat@gmail.com</a>

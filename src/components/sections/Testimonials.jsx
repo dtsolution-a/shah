@@ -85,7 +85,12 @@ function StarRating({ rating }) {
   );
 }
 
-export default function Testimonials() {
+export default function Testimonials({
+  badge = 'Client Reviews',
+  heading = "Trusted by India's Leading Industries",
+  description = "30+ years of consistent delivery. Here's what our clients say.",
+  ratingDescription = '1000+ satisfied clients across India',
+}) {
   const { ref, isInView } = useScrollAnimation();
   const [active, setActive] = useState(0);
   const [autoplay, setAutoplay] = useState(true);
@@ -119,12 +124,12 @@ export default function Testimonials() {
           variants={fadeUpVariants}
           className="text-center max-w-2xl mx-auto mb-14"
         >
-          <p className="badge-blue mb-4">Client Reviews</p>
+          <p className="badge-blue mb-4">{badge}</p>
           <h2 className="heading-display text-[clamp(1.8rem,3.5vw,2.8rem)] text-gray-900 dark:text-white mb-4">
-            Trusted by India's Leading Industries
+            {heading}
           </h2>
           <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
-            30+ years of consistent delivery. Here's what our clients say.
+            {description}
           </p>
 
           {/* Aggregate rating */}
@@ -136,7 +141,7 @@ export default function Testimonials() {
             </div>
             <span className="text-sm font-bold text-gray-900 dark:text-white">5.0</span>
             <span className="text-gray-300 dark:text-gray-700">|</span>
-            <span className="text-sm text-gray-500 dark:text-gray-400">1000+ satisfied clients across India</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">{ratingDescription}</span>
           </div>
         </motion.div>
 

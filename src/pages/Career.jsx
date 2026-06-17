@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { MapPin, Briefcase, GraduationCap, Heart, ArrowRight, Clock } from 'lucide-react';
 import { useScrollAnimation, fadeUpVariants, staggerContainer, staggerItem } from '../hooks/useScrollAnimation';
+import Testimonials from '../components/sections/Testimonials';
 import CTASection from '../components/sections/CTASection';
 
 const openings = [
@@ -166,6 +167,14 @@ export default function Career() {
           </motion.div>
         </div>
       </section>
+
+      {/* Employee Testimonials */}
+      <Testimonials
+        badge="Employee Reviews"
+        heading="What Our Team Says"
+        description="Meet the talented engineers and professionals who drive Shah Group's mission every day."
+        ratingDescription="Join a team of 50+ dedicated professionals across India"
+      />
 
       <CTASection />
     </div>
