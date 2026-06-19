@@ -1,9 +1,5 @@
-# Railway deployment config
-# This tells Railway how to build and start your backend
-
 [build]
 builder = "NIXPACKS"
-buildCommand = "npm install"
 
 [deploy]
 startCommand = "node server/index.js"
