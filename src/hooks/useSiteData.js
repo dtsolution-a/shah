@@ -337,3 +337,52 @@ export function useBlogPost(slug) {
 
   return { post: data, loading };
 }
+// Fetch testimonials by page (home or career)
+export function useTestimonials(page = 'home') {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [version, setVersion] = useState(0);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    const handler = () => setVersion(v => v + 1);
+    listeners.add(handler);
+    return () => { listeners.delete(handler); mountedRef.current = false; };
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchWithTimeout(bustCache(`${API}/testimonials?page=${page}`))
+      .then(r => { if (!r.ok) throw new Error('Failed'); return r.json(); })
+      .then(d => { if (mountedRef.current) { setData(d || []); setLoading(false); } })
+      .catch(() => { if (mountedRef.current) { setData([]); setLoading(false); } });
+  }, [page, version]);
+
+  return { testimonials: data, loading };
+}
+
+// Fetch career jobs (public)
+export function useJobs() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [version, setVersion] = useState(0);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    const handler = () => setVersion(v => v + 1);
+    listeners.add(handler);
+    return () => { listeners.delete(handler); mountedRef.current = false; };
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchWithTimeout(bustCache(`${API}/jobs`))
+      .then(r => { if (!r.ok) throw new Error('Failed'); return r.json(); })
+      .then(d => { if (mountedRef.current) { setData(d || []); setLoading(false); } })
+      .catch(() => { if (mountedRef.current) { setData([]); setLoading(false); } });
+  }, [version]);
+
+  return { jobs: data, loading };
+}

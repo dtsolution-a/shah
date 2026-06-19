@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Quote, ChevronLeft, ChevronRight, Building2 } from 'lucide-react';
 import { useScrollAnimation, fadeUpVariants, staggerContainer, staggerItem } from '../../hooks/useScrollAnimation';
+import { useTestimonials } from '../../hooks/useSiteData';
 
 const testimonials = [
   {
@@ -100,17 +101,17 @@ export default function Testimonials({
   useEffect(() => {
     if (!autoplay) return;
     timerRef.current = setInterval(() => {
-      setActive((prev) => (prev + 1) % testimonials.length);
+      setActive((prev) => (prev + 1) % activeData.length);
     }, 5000);
     return () => clearInterval(timerRef.current);
   }, [autoplay, active]);
 
   const go = (dir) => {
     setAutoplay(false);
-    setActive((prev) => (prev + dir + testimonials.length) % testimonials.length);
+    setActive((prev) => (prev + dir + testimonials.length) % activeData.length);
   };
 
-  const t = testimonials[active];
+  const t = activeData[active];
 
   return (
     <section className="section-padding bg-gray-50 dark:bg-gray-900/30 overflow-hidden">
@@ -295,3 +296,4 @@ export default function Testimonials({
     </section>
   );
 }
+

@@ -103,4 +103,20 @@ router.get('/blog/slug/:slug', (req, res) => {
   res.json(post);
 });
 
+
+// GET testimonials by page (home or career)
+router.get('/testimonials', (req, res) => {
+  const { page } = req.query;
+  let query = 'SELECT * FROM testimonials WHERE is_active = 1';
+  const params = [];
+  if (page) { query += ' AND page = ?'; params.push(page); }
+  query += ' ORDER BY sort_order ASC, created_at DESC';
+  res.json(db.prepare(query).all(...params));
+});
+
+// GET active career jobs (public)
+router.get('/jobs', (req, res) => {
+  const jobs = db.prepare('SELECT * FROM career_jobs WHERE is_active = 1 ORDER BY sort_order ASC, created_at DESC').all();
+  res.json(jobs);
+});
 export default router;

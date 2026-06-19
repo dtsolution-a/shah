@@ -1,36 +1,9 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { MapPin, Briefcase, GraduationCap, Heart, ArrowRight, Clock } from 'lucide-react';
-import { useScrollAnimation, fadeUpVariants, staggerContainer, staggerItem } from '../hooks/useScrollAnimation';
+import { MapPin, Briefcase, GraduationCap, Heart, ArrowRight, Clock, Loader2 } from 'lucide-react';
+import { useScrollAnimation, fadeUpVariants } from '../hooks/useScrollAnimation';
+import { useJobs } from '../hooks/useSiteData';
 import Testimonials from '../components/sections/Testimonials';
 import CTASection from '../components/sections/CTASection';
-
-const openings = [
-  {
-    id: 1,
-    title: 'Sales Engineer — Compressed Air & Gas',
-    type: 'Full-time',
-    location: 'Surat, Gujarat',
-    experience: '2–5 years',
-    description: 'Drive sales of Parker, Kaishan, and Chicago Pneumatic products to industrial customers. Strong technical background in compressed air systems preferred.',
-  },
-  {
-    id: 2,
-    title: 'Technical Service Engineer',
-    type: 'Full-time',
-    location: 'Surat, Gujarat',
-    experience: '3–7 years',
-    description: 'Handle installation, commissioning, and maintenance of pneumatic, hydraulic, and instrumentation systems at customer sites.',
-  },
-  {
-    id: 3,
-    title: 'Application Engineer — Instrumentation',
-    type: 'Full-time',
-    location: 'Surat, Gujarat',
-    experience: '2–5 years',
-    description: 'Technical support and application engineering for Parker instrumentation components. Experience with oil & gas or chemical industries preferred.',
-  },
-];
 
 const perks = [
   { icon: Heart, text: 'Ethical work culture' },
@@ -41,6 +14,7 @@ const perks = [
 
 export default function Career() {
   const { ref, isInView } = useScrollAnimation();
+  const { jobs, loading } = useJobs();
 
   return (
     <div>
@@ -74,7 +48,7 @@ export default function Career() {
             {perks.map(({ icon: Icon, text }) => (
               <div key={text} className="card p-5 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-4.5 h-4.5 text-accent" />
+                  <Icon className="w-4 h-4 text-accent" />
                 </div>
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{text}</p>
               </div>
@@ -96,51 +70,78 @@ export default function Career() {
             <h2 className="heading-display text-[clamp(1.6rem,3vw,2.5rem)] text-gray-900 dark:text-white mb-2">
               Current Openings
             </h2>
-            <p className="text-gray-500 dark:text-gray-400">{openings.length} positions available</p>
+            <p className="text-gray-500 dark:text-gray-400">
+              {loading ? 'Loading...' : `${jobs.length} positions available`}
+            </p>
           </motion.div>
 
-          <motion.div
-            initial="hidden"
-            animate={isInView ? 'visible' : 'hidden'}
-            variants={staggerContainer}
-            className="space-y-4"
-          >
-            {openings.map((job) => (
-              <motion.div
-                key={job.id}
-                variants={staggerItem}
-                className="card p-6 group hover:border-accent/30 transition-all duration-300"
-              >
-                <div className="flex flex-col md:flex-row gap-4 justify-between">
-                  <div className="flex-1">
-                    <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-3 group-hover:text-accent transition-colors">
-                      {job.title}
-                    </h3>
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="badge-gray">{job.type}</span>
-                      <span className="badge-gray">
-                        <MapPin className="w-3 h-3" />
-                        {job.location}
-                      </span>
-                      <span className="badge-gray">{job.experience}</span>
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <Loader2 className="w-8 h-8 animate-spin text-accent" />
+            </div>
+          ) : jobs.length === 0 ? (
+            <div className="card p-10 text-center">
+              <p className="text-gray-500 dark:text-gray-400">No openings at the moment. Check back soon!</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {jobs.map((job, idx) => (
+                <motion.div
+                  key={job.id}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-30px' }}
+                  transition={{ duration: 0.4, delay: idx * 0.07 }}
+                  className="card p-6 group hover:border-accent/30 transition-all duration-300"
+                >
+                  <div className="flex flex-col md:flex-row gap-4 justify-between">
+                    <div className="flex-1">
+                      <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-3 group-hover:text-accent transition-colors">
+                        {job.title}
+                      </h3>
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {job.type && <span className="badge-gray">{job.type}</span>}
+                        {job.location && (
+                          <span className="badge-gray flex items-center gap-1">
+                            <MapPin className="w-3 h-3" />
+                            {job.location}
+                          </span>
+                        )}
+                        {job.experience && <span className="badge-gray">{job.experience}</span>}
+                        {job.department && <span className="badge-blue">{job.department}</span>}
+                      </div>
+                      {job.description && (
+                        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                          {job.description}
+                        </p>
+                      )}
                     </div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                      {job.description}
-                    </p>
+                    <div className="flex-shrink-0">
+                      {job.apply_url ? (
+                        <a
+                          href={job.apply_url}
+                          target={job.apply_url.startsWith('mailto') ? '_self' : '_blank'}
+                          rel="noopener noreferrer"
+                          className="btn-primary py-2.5 px-5 text-sm"
+                        >
+                          Apply Now
+                          <ArrowRight className="w-4 h-4" />
+                        </a>
+                      ) : (
+                        <a
+                          href={`mailto:info@shahgroup.co?subject=Application: ${job.title}`}
+                          className="btn-primary py-2.5 px-5 text-sm"
+                        >
+                          Apply Now
+                          <ArrowRight className="w-4 h-4" />
+                        </a>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex-shrink-0">
-                    <a
-                      href={`mailto:info@shahgroup.co?subject=Application: ${job.title}`}
-                      className="btn-primary py-2.5 px-5 text-sm"
-                    >
-                      Apply Now
-                      <ArrowRight className="w-4 h-4" />
-                    </a>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+                </motion.div>
+              ))}
+            </div>
+          )}
 
           {/* Open application */}
           <motion.div
@@ -168,8 +169,9 @@ export default function Career() {
         </div>
       </section>
 
-      {/* Employee Testimonials */}
+      {/* Employee Testimonials — Career page only */}
       <Testimonials
+        page="career"
         badge="Employee Reviews"
         heading="What Our Team Says"
         description="Meet the talented engineers and professionals who drive Shah Group's mission every day."

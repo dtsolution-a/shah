@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Package, Tag, ShoppingBag, FileText, MessageSquare, TrendingUp, AlertCircle } from 'lucide-react';
+import { Package, Tag, ShoppingBag, FileText, MessageSquare, TrendingUp, AlertCircle, Star, Briefcase } from 'lucide-react';
 import api from './AdminAPI';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
-    brands: 0, categories: 0, products: 0, blogPosts: 0, unreadContacts: 0
+    brands: 0, categories: 0, products: 0, blogPosts: 0, unreadContacts: 0, testimonials: 0, jobs: 0
   });
   const [loading, setLoading] = useState(true);
 
@@ -14,19 +14,23 @@ export default function AdminDashboard() {
 
   const loadStats = async () => {
     try {
-      const [brands, categories, products, blog, contacts] = await Promise.all([
+      const [brands, categories, products, blog, contacts, testimonials, jobs] = await Promise.all([
         api.getBrands(),
         api.getCategories(),
         api.getProducts(),
         api.getBlogPosts(),
-        api.getContacts(0) // unread only
+        api.getContacts(0), // unread only
+        api.request('GET', '/testimonials').catch(() => []),
+        api.request('GET', '/jobs').catch(() => []),
       ]);
       setStats({
         brands: brands.length,
         categories: categories.length,
         products: products.length,
         blogPosts: blog.length,
-        unreadContacts: contacts.length
+        unreadContacts: contacts.length,
+        testimonials: Array.isArray(testimonials) ? testimonials.length : (testimonials.testimonials || []).length,
+        jobs: Array.isArray(jobs) ? jobs.length : (jobs.jobs || []).length,
       });
     } catch (err) {
       console.error('Failed to load stats:', err);
@@ -41,6 +45,8 @@ export default function AdminDashboard() {
     { label: 'Products', value: stats.products, icon: ShoppingBag, color: 'bg-green-500', href: '/admin/products' },
     { label: 'Blog Posts', value: stats.blogPosts, icon: FileText, color: 'bg-orange-500', href: '/admin/blog' },
     { label: 'Unread Enquiries', value: stats.unreadContacts, icon: MessageSquare, color: 'bg-red-500', href: '/admin/contacts' },
+    { label: 'Testimonials', value: stats.testimonials, icon: Star, color: 'bg-yellow-500', href: '/admin/testimonials' },
+    { label: 'Jobs', value: stats.jobs, icon: Briefcase, color: 'bg-teal-500', href: '/admin/jobs' },
   ];
 
   if (loading) {
@@ -98,6 +104,14 @@ export default function AdminDashboard() {
           <a href="/admin/contacts" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <MessageSquare className="w-5 h-5 text-red-500" />
             <span className="text-sm font-medium text-gray-700">View Enquiries</span>
+          </a>
+          <a href="/admin/testimonials" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+            <Star className="w-5 h-5 text-yellow-500" />
+            <span className="text-sm font-medium text-gray-700">Manage Testimonials</span>
+          </a>
+          <a href="/admin/jobs" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+            <Briefcase className="w-5 h-5 text-teal-500" />
+            <span className="text-sm font-medium text-gray-700">Manage Jobs</span>
           </a>
           <a href="/" target="_blank" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <TrendingUp className="w-5 h-5 text-gray-500" />

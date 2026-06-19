@@ -10,6 +10,8 @@ import blogRoutes from './routes/blog.js';
 import uploadRoutes from './routes/upload.js';
 import contactRoutes from './routes/contacts.js';
 import publicRoutes from './routes/public.js';
+import testimonialsRoutes from './routes/testimonials.js';
+import jobsRoutes from './routes/jobs.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -51,6 +53,8 @@ app.use('/api/blog', blogRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/public', publicRoutes);
+app.use('/api/testimonials', testimonialsRoutes);
+app.use('/api/jobs', jobsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Package, Tag, ShoppingBag, FileText,
-  MessageSquare, LogOut, Menu, X, Shield, ChevronDown
+  MessageSquare, LogOut, Menu, X, Shield, ChevronDown, Star, Briefcase
 } from 'lucide-react';
 import api from '../../pages/admin/AdminAPI';
 
@@ -36,6 +36,8 @@ export default function AdminLayout() {
     { to: '/admin/products', icon: ShoppingBag, label: 'Products' },
     { to: '/admin/blog', icon: FileText, label: 'Blog Posts' },
     { to: '/admin/contacts', icon: MessageSquare, label: 'Enquiries' },
+    { to: '/admin/testimonials', icon: Star, label: 'Testimonials' },
+    { to: '/admin/jobs', icon: Briefcase, label: 'Jobs' },
   ];
 
   const isActive = (path, end) => {

@@ -97,6 +97,37 @@ db.exec(`
     is_read INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
+
+  CREATE TABLE IF NOT EXISTS testimonials (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    designation TEXT,
+    company TEXT,
+    message TEXT NOT NULL,
+    rating INTEGER DEFAULT 5,
+    avatar TEXT,
+    page TEXT DEFAULT 'home',
+    sort_order INTEGER DEFAULT 0,
+    is_active INTEGER DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE TABLE IF NOT EXISTS career_jobs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    department TEXT,
+    location TEXT DEFAULT 'Surat, Gujarat',
+    type TEXT DEFAULT 'Full-time',
+    experience TEXT,
+    description TEXT,
+    requirements TEXT,
+    apply_url TEXT,
+    is_active INTEGER DEFAULT 1,
+    sort_order INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
 `);
 
 export default db;
