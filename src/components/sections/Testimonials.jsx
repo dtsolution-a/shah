@@ -87,31 +87,66 @@ function StarRating({ rating }) {
 }
 
 export default function Testimonials({
+  page = 'home',
   badge = 'Client Reviews',
   heading = "Trusted by India's Leading Industries",
   description = "30+ years of consistent delivery. Here's what our clients say.",
   ratingDescription = '1000+ satisfied clients across India',
 }) {
   const { ref, isInView } = useScrollAnimation();
+  const { data: dbTestimonials } = useTestimonials(page);
   const [active, setActive] = useState(0);
   const [autoplay, setAutoplay] = useState(true);
   const timerRef = useRef(null);
 
+  const colors = ['#2563EB', '#6366f1', '#0891b2', '#d97706', '#16a34a', '#8b5cf6'];
+  const activeData = dbTestimonials && dbTestimonials.length > 0 
+    ? dbTestimonials.map((item, index) => ({
+        id: item.id || index,
+        name: item.name,
+        title: item.designation || '',
+        company: item.company || '',
+        industry: item.company || 'Client',
+        rating: item.rating || 5,
+        review: item.message || '',
+        avatar: item.name ? item.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : 'C',
+        color: colors[index % colors.length]
+      }))
+    : testimonials;
+
+  // Reset active index if activeData length changes to prevent out of bounds
+  useEffect(() => {
+    if (active >= activeData.length) {
+      setActive(0);
+    }
+  }, [activeData.length, active]);
+
   // Auto-advance
   useEffect(() => {
-    if (!autoplay) return;
+    if (!autoplay || activeData.length === 0) return;
     timerRef.current = setInterval(() => {
       setActive((prev) => (prev + 1) % activeData.length);
     }, 5000);
     return () => clearInterval(timerRef.current);
-  }, [autoplay, active]);
+  }, [autoplay, active, activeData.length]);
 
   const go = (dir) => {
     setAutoplay(false);
-    setActive((prev) => (prev + dir + testimonials.length) % activeData.length);
+    if (activeData.length === 0) return;
+    setActive((prev) => (prev + dir + activeData.length) % activeData.length);
   };
 
-  const t = activeData[active];
+  const t = activeData[active] || {
+    id: 0,
+    name: '',
+    title: '',
+    company: '',
+    industry: '',
+    rating: 5,
+    review: '',
+    avatar: '',
+    color: '#2563EB'
+  };
 
   return (
     <section className="section-padding bg-gray-50 dark:bg-gray-900/30 overflow-hidden">
@@ -207,7 +242,7 @@ export default function Testimonials({
                 <div className="mt-10 flex items-center justify-between">
                   {/* Progress dots */}
                   <div className="flex gap-1.5">
-                    {testimonials.map((_, i) => (
+                    {activeData.map((_, i) => (
                       <button
                         key={i}
                         onClick={() => { setAutoplay(false); setActive(i); }}
@@ -247,11 +282,11 @@ export default function Testimonials({
             variants={staggerContainer}
             className="lg:col-span-5 space-y-3"
           >
-            {testimonials.filter((_, i) => i !== active).slice(0, 3).map((review) => (
+            {activeData.filter((_, i) => i !== active).slice(0, 3).map((review) => (
               <motion.button
                 key={review.id}
                 variants={staggerItem}
-                onClick={() => { setAutoplay(false); setActive(testimonials.findIndex((r) => r.id === review.id)); }}
+                onClick={() => { setAutoplay(false); setActive(activeData.findIndex((r) => r.id === review.id)); }}
                 className="w-full text-left group bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md transition-all duration-200"
               >
                 <div className="flex items-start gap-3">
