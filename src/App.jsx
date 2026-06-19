@@ -24,6 +24,8 @@ import AdminCategories from './pages/admin/AdminCategories';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminBlog from './pages/admin/AdminBlog';
 import AdminContacts from './pages/admin/AdminContacts';
+import AdminTestimonials from './pages/admin/AdminTestimonials';
+import AdminJobs from './pages/admin/AdminJobs';
 import useThemeStore from './store/themeStore';
 
 // Page transition wrapper
@@ -153,6 +155,8 @@ export default function App() {
             <Route path="products" element={<AdminProducts />} />
             <Route path="blog" element={<AdminBlog />} />
             <Route path="contacts" element={<AdminContacts />} />
+            <Route path="testimonials" element={<AdminTestimonials />} />
+            <Route path="jobs" element={<AdminJobs />} />
           </Route>
         </Routes>
       ) : (
