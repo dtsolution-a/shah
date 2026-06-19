@@ -1,0 +1,125 @@
+// Admin API helper
+// In production this points to Railway backend
+const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
+
+class AdminAPI {
+  constructor() {
+    this.token = localStorage.getItem('admin_token');
+  }
+
+  setToken(token) {
+    this.token = token;
+    localStorage.setItem('admin_token', token);
+  }
+
+  clearToken() {
+    this.token = null;
+    localStorage.removeItem('admin_token');
+  }
+
+  isAuthenticated() {
+    return !!this.token;
+  }
+
+  async request(method, path, body = null) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (this.token) {
+      headers['Authorization'] = `Bearer ${this.token}`;
+    }
+
+    const options = { method, headers };
+    if (body && method !== 'GET') {
+      options.body = JSON.stringify(body);
+    }
+
+    const res = await fetch(`${API_BASE}${path}`, options);
+    const data = await res.json();
+
+    if (!res.ok) {
+      if (res.status === 401 || res.status === 403) {
+        this.clearToken();
+        window.location.href = '/admin/login';
+      }
+      throw new Error(data.error || 'Request failed');
+    }
+    return data;
+  }
+
+  // Auth
+  login(username, password) {
+    return this.request('POST', '/auth/login', { username, password });
+  }
+  getMe() { return this.request('GET', '/auth/me'); }
+  changePassword(currentPassword, newPassword) {
+    return this.request('POST', '/auth/change-password', { currentPassword, newPassword });
+  }
+
+  // Brands
+  getBrands() { return this.request('GET', '/brands'); }
+  getBrand(id) { return this.request('GET', `/brands/${id}`); }
+  createBrand(data) { return this.request('POST', '/brands', data); }
+  updateBrand(id, data) { return this.request('PUT', `/brands/${id}`, data); }
+  deleteBrand(id) { return this.request('DELETE', `/brands/${id}`); }
+
+  // Categories
+  getCategories(brandId) {
+    const query = brandId ? `?brandId=${brandId}` : '';
+    return this.request('GET', `/categories${query}`);
+  }
+  getCategory(id) { return this.request('GET', `/categories/${id}`); }
+  createCategory(data) { return this.request('POST', '/categories', data); }
+  updateCategory(id, data) { return this.request('PUT', `/categories/${id}`, data); }
+  deleteCategory(id) { return this.request('DELETE', `/categories/${id}`); }
+
+  // Products
+  getProducts(categoryId) {
+    const query = categoryId ? `?categoryId=${categoryId}` : '';
+    return this.request('GET', `/products${query}`);
+  }
+  getProduct(id) { return this.request('GET', `/products/${id}`); }
+  createProduct(data) { return this.request('POST', '/products', data); }
+  updateProduct(id, data) { return this.request('PUT', `/products/${id}`, data); }
+  deleteProduct(id) { return this.request('DELETE', `/products/${id}`); }
+
+  // Blog
+  getBlogPosts() { return this.request('GET', '/blog'); }
+  getBlogPost(id) { return this.request('GET', `/blog/${id}`); }
+  createBlogPost(data) { return this.request('POST', '/blog', data); }
+  updateBlogPost(id, data) { return this.request('PUT', `/blog/${id}`, data); }
+  deleteBlogPost(id) { return this.request('DELETE', `/blog/${id}`); }
+
+  // Contacts
+  getContacts(isRead) {
+    const query = isRead !== undefined ? `?is_read=${isRead}` : '';
+    return this.request('GET', `/contacts${query}`);
+  }
+  getContact(id) { return this.request('GET', `/contacts/${id}`); }
+  deleteContact(id) { return this.request('DELETE', `/contacts/${id}`); }
+  markContactRead(id, isRead) {
+    return this.request('PATCH', `/contacts/${id}/read`, { is_read: isRead });
+  }
+
+  // Upload
+  async uploadFile(file, folder = 'general') {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', folder);
+
+    const headers = {};
+    if (this.token) {
+      headers['Authorization'] = `Bearer ${this.token}`;
+    }
+
+    const res = await fetch(`${API_BASE}/upload`, { method: 'POST', headers, body: formData });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Upload failed');
+    return data;
+  }
+
+  deleteFile(url) {
+    return this.request('POST', '/upload/delete', { url });
+  }
+}
+
+const api = new AdminAPI();
+export default api;

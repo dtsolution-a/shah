@@ -12,8 +12,18 @@ import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
 import Services from './pages/Services';
 import Gallery from './pages/Gallery';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
 import Career from './pages/Career';
 import Contact from './pages/Contact';
+import AdminLayout from './components/admin/AdminLayout';
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminBrands from './pages/admin/AdminBrands';
+import AdminCategories from './pages/admin/AdminCategories';
+import AdminProducts from './pages/admin/AdminProducts';
+import AdminBlog from './pages/admin/AdminBlog';
+import AdminContacts from './pages/admin/AdminContacts';
 import useThemeStore from './store/themeStore';
 
 // Page transition wrapper
@@ -63,7 +73,7 @@ function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
-      className="fixed bottom-[7rem] right-6 z-50 group"
+      className="fixed bottom-6 right-6 z-50 group"
     >
       <motion.div
         initial={{ scale: 0, opacity: 0 }}
@@ -110,7 +120,7 @@ function ScrollToTopBtn() {
           transition={{ duration: 0.2 }}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           aria-label="Scroll to top"
-          className="fixed bottom-[14rem] right-6 z-50 w-[52px] h-[52px] rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-accent hover:text-white hover:border-accent transition-all duration-200"
+          className="fixed bottom-[10.5rem] right-6 z-50 w-[52px] h-[52px] rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-accent hover:text-white hover:border-accent transition-all duration-200"
         >
           <ArrowUp className="w-4 h-4" />
         </motion.button>
@@ -127,34 +137,54 @@ export default function App() {
     initTheme();
   }, []);
 
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
   return (
     <HelmetProvider>
       <ScrollToTop />
-      <div className="min-h-screen flex flex-col">
-        <Navbar />
-        <div className="flex-1">
-          <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
-              <Route path="/" element={<PageTransition><Home /></PageTransition>} />
-              <Route path="/about" element={<PageTransition><About /></PageTransition>} />
-              <Route path="/products" element={<PageTransition><Products /></PageTransition>} />
-              <Route path="/products/:brandId" element={<PageTransition><Products /></PageTransition>} />
-              <Route path="/products/:brandId/:categorySlug" element={<PageTransition><ProductDetail /></PageTransition>} />
-              <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
-              <Route path="/gallery" element={<PageTransition><Gallery /></PageTransition>} />
-              <Route path="/career" element={<PageTransition><Career /></PageTransition>} />
-              <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
-              <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
-            </Routes>
-          </AnimatePresence>
-        </div>
-        <Footer />
+      {isAdminRoute ? (
+        // Admin Panel (no Navbar/Footer)
+        <Routes>
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="brands" element={<AdminBrands />} />
+            <Route path="categories" element={<AdminCategories />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="blog" element={<AdminBlog />} />
+            <Route path="contacts" element={<AdminContacts />} />
+          </Route>
+        </Routes>
+      ) : (
+        // Main Website
+        <div className="min-h-screen flex flex-col">
+          <Navbar />
+          <div className="flex-1">
+            <AnimatePresence mode="wait">
+              <Routes location={location} key={location.pathname}>
+                <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+                <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+                <Route path="/products" element={<PageTransition><Products /></PageTransition>} />
+                <Route path="/products/:brandId" element={<PageTransition><Products /></PageTransition>} />
+                <Route path="/products/:brandId/:categorySlug" element={<PageTransition><ProductDetail /></PageTransition>} />
+                <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
+                <Route path="/gallery" element={<PageTransition><Gallery /></PageTransition>} />
+                <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
+                <Route path="/blog/:slug" element={<PageTransition><BlogPost /></PageTransition>} />
+                <Route path="/career" element={<PageTransition><Career /></PageTransition>} />
+                <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+                <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+              </Routes>
+            </AnimatePresence>
+          </div>
+          <Footer />
 
-        {/* Global floating elements */}
-        <WhatsAppButton />
-        <ScrollToTopBtn />
-        <ChatBot />
-      </div>
+          {/* Global floating elements */}
+          <WhatsAppButton />
+          <ScrollToTopBtn />
+          <ChatBot />
+        </div>
+      )}
     </HelmetProvider>
   );
 }

@@ -4,10 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Menu, X, Sun, Moon, ChevronDown, 
   Wind, Settings2, Gauge, Cable, Filter, Zap, Leaf, Layers, Star,
-  Phone, Mail
+  Phone, Mail, Loader2
 } from 'lucide-react';
 import useThemeStore from '../../store/themeStore';
-import { brands, categories } from '../../data/products';
+import { useBrands, useCategories } from '../../hooks/useSiteData';
 
 const navItems = [
   { label: 'Home', href: '/' },
@@ -15,6 +15,7 @@ const navItems = [
   { label: 'Products', href: '/products', hasDropdown: true },
   { label: 'Services', href: '/services' },
   { label: 'Gallery', href: '/gallery' },
+  { label: 'Blog', href: '/blog' },
   { label: 'Career', href: '/career' },
 ];
 
@@ -37,6 +38,8 @@ export default function Navbar() {
   const { theme, toggleTheme } = useThemeStore();
   const location = useLocation();
   const isDark = theme === 'dark';
+  const { brands } = useBrands();
+  const { categories } = useCategories();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -117,12 +120,12 @@ export default function Navbar() {
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 10, scale: 0.97 }}
                           transition={{ duration: 0.18, ease: [0.25, 0.1, 0.25, 1] }}
-                          className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[1000px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl overflow-hidden"
+                          className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[1100px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl shadow-2xl overflow-hidden"
                         >
-                          <div className="flex">
+                          <div className="flex min-h-[440px]">
                             {/* Brand sidebar */}
-                            <div className="w-[220px] bg-gray-50/80 dark:bg-gray-900/80 border-r border-gray-200 dark:border-gray-800 p-3 flex flex-col gap-1">
-                              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-2 mb-2">Brands</p>
+                            <div className="w-[260px] bg-gray-50/80 dark:bg-gray-900/80 border-r border-gray-200 dark:border-gray-800 p-4 flex flex-col gap-1.5">
+                              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest px-2 mb-3">Brands</p>
                               {brands.map((brand) => (
                                 <button
                                   key={brand.id}
@@ -133,7 +136,7 @@ export default function Navbar() {
                                       : 'hover:bg-white/70 dark:hover:bg-gray-800/60'
                                   }`}
                                 >
-                                  <span className={`text-xs font-semibold truncate ${
+                                  <span className={`text-sm font-semibold truncate ${
                                     activeBrand === brand.id ? 'text-accent' : 'text-gray-600 dark:text-gray-400'
                                   }`}>
                                     {brand.shortName}
@@ -148,11 +151,11 @@ export default function Navbar() {
                             </div>
 
                             {/* Categories panel */}
-                            <div className="flex-1 p-5">
-                              <div className="flex items-start justify-between mb-4">
+                            <div className="flex-1 p-8">
+                              <div className="flex items-start justify-between mb-6">
                                 <div>
-                                  <p className="font-bold text-gray-900 dark:text-white text-sm">{activeBrandData?.name}</p>
-                                  <p className="text-xs text-gray-400 mt-0.5">{activeBrandData?.tagline}</p>
+                                  <p className="font-bold text-gray-900 dark:text-white text-base">{activeBrandData?.name}</p>
+                                  <p className="text-sm text-gray-400 mt-1">{activeBrandData?.tagline}</p>
                                 </div>
                                 <Link
                                   to={`/products/${activeBrand}`}
@@ -168,13 +171,13 @@ export default function Navbar() {
                                     <Link
                                       key={cat.id}
                                       to={`/products/${activeBrand}/${cat.slug}`}
-                                      className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors group"
+                                      className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors group"
                                     >
-                                      <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0 group-hover:bg-accent/20 transition-colors">
-                                        <Icon className="w-4.5 h-4.5 text-accent" />
+                                      <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0 group-hover:bg-accent/20 transition-colors">
+                                        <Icon className="w-5 h-5 text-accent" />
                                       </div>
                                       <div>
-                                        <p className="text-xs font-semibold text-gray-900 dark:text-white group-hover:text-accent transition-colors leading-tight">
+                                        <p className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-accent transition-colors leading-tight">
                                           {cat.name}
                                         </p>
                                         <p className="text-[10px] text-gray-400 mt-0.5">{cat.products.length} products</p>

@@ -12,11 +12,28 @@ export default function Contact() {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 5000);
-    setForm({ name: '', company: '', email: '', phone: '', product: '', message: '' });
+    try {
+      const res = await fetch('/api/contacts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          company: form.company,
+          subject: form.product,
+          message: form.message
+        })
+      });
+      if (!res.ok) throw new Error('Failed to submit');
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 5000);
+      setForm({ name: '', company: '', email: '', phone: '', product: '', message: '' });
+    } catch (err) {
+      alert('Failed to send message. Please try again later.');
+    }
   };
 
   return (

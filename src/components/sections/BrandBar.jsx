@@ -90,13 +90,13 @@ export default function BrandBar() {
                     transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5`}
                 >
                   {/* Logo image */}
-                  <div className="h-14 flex items-center justify-center w-full px-2">
+                  <div className="h-20 flex items-center justify-center w-full px-2">
                     <img
                       src={brand.logo}
                       alt={`${brand.name} logo`}
                       className={`max-w-full object-contain transition-all duration-300 opacity-100
                         ${brand.isSvg ? 'group-hover:opacity-100' : 'group-hover:opacity-100'}
-                        ${brand.id === 'tubacex' ? 'max-h-14' : 'max-h-12'}
+                        ${brand.id === 'tubacex' ? 'max-h-20 scale-[1.7]' : 'max-h-16 scale-110'}
                       `}
                       onError={(e) => {
                         // Fallback to text if image fails

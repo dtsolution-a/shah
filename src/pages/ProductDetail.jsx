@@ -1,7 +1,8 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, CheckCircle2, Wind, Settings2, Gauge, Cable, Filter, Zap, Leaf, Star, Settings, Layers, Droplets, Minus } from 'lucide-react';
-import { brands, categories } from '../data/products';
+import { ArrowLeft, ArrowRight, CheckCircle2, Wind, Settings2, Gauge, Cable, Filter, Zap, Leaf, Star, Settings, Layers, Droplets, Minus, X, ZoomIn, Loader2 } from 'lucide-react';
+import { useCategory, useBrand, useCategories } from '../hooks/useSiteData';
 import { useScrollAnimation, staggerContainer, staggerItem, fadeUpVariants } from '../hooks/useScrollAnimation';
 import CTASection from '../components/sections/CTASection';
 
@@ -10,9 +11,19 @@ const iconMap = { Wind, Settings2, Gauge, Cable, Filter, Zap, Leaf, Star, Settin
 export default function ProductDetail() {
   const { brandId, categorySlug } = useParams();
   const { ref, isInView } = useScrollAnimation();
+  const [lightboxImage, setLightboxImage] = useState(null);
+  const { category, loading: catLoading } = useCategory(brandId, categorySlug);
+  const { brand, loading: brandLoading } = useBrand(brandId);
+  const { categories } = useCategories(brandId);
 
-  const brand = brands.find((b) => b.id === brandId);
-  const category = categories.find((c) => c.brandId === brandId && c.slug === categorySlug);
+  // Show spinner while loading
+  if (catLoading || brandLoading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-accent" />
+      </div>
+    );
+  }
 
   if (!brand || !category) {
     return (
@@ -100,36 +111,56 @@ export default function ProductDetail() {
       <section className="section-padding">
         <div className="container-wide">
           <motion.div
-            ref={ref}
-            initial="hidden"
-            animate={isInView ? 'visible' : 'hidden'}
-            variants={fadeUpVariants}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.5 }}
             className="mb-10"
           >
             <h2 className="heading-display text-2xl text-gray-900 dark:text-white mb-2">
               Products in this Category
             </h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm">
-              {category.products.length} products available
+              {(category.products || []).length} products available
             </p>
           </motion.div>
 
-          <motion.div
-            initial="hidden"
-            animate={isInView ? 'visible' : 'hidden'}
-            variants={staggerContainer}
-            className="space-y-4"
-          >
-            {category.products.map((product, idx) => (
+          <div className="space-y-4">
+            {(category.products || []).map((product, idx) => (
               <motion.div
                 key={product.id}
-                variants={staggerItem}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-30px' }}
+                transition={{ duration: 0.4, delay: idx * 0.07 }}
                 className="card p-6 hover:border-accent/30 group transition-all duration-300"
               >
                 <div className="flex flex-col md:flex-row gap-6">
-                  {/* Product icon placeholder */}
-                  <div className="w-20 h-20 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0 text-2xl font-bold text-gray-300 dark:text-gray-600">
-                    {idx + 1}
+                  {/* Product image - clickable */}
+                  <div
+                    className="w-28 h-28 md:w-32 md:h-32 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0 overflow-hidden border border-gray-200 dark:border-gray-700 cursor-pointer group/img relative"
+                    onClick={() => product.image && setLightboxImage({ src: product.image, name: product.name })}
+                  >
+                    {product.image ? (
+                      <>
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-300"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.style.display = 'none';
+                            e.target.nextSibling.style.display = 'flex';
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+                          <ZoomIn className="w-6 h-6 text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300" />
+                        </div>
+                      </>
+                    ) : null}
+                    <div className={`w-full h-full flex items-center justify-center text-2xl font-bold text-gray-300 dark:text-gray-600 ${product.image ? 'hidden' : ''}`}>
+                      {idx + 1}
+                    </div>
                   </div>
                   
                   <div className="flex-1">
@@ -141,7 +172,7 @@ export default function ProductDetail() {
                     </p>
                     
                     {/* Specs */}
-                    {product.specs && (
+                    {product.specs && Array.isArray(product.specs) && product.specs.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {product.specs.map((spec) => (
                           <span key={spec} className="tag text-[11px] normal-case tracking-normal">
@@ -163,7 +194,7 @@ export default function ProductDetail() {
                 </div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -201,6 +232,49 @@ export default function ProductDetail() {
       )}
 
       <CTASection />
+
+      {/* Lightbox Modal */}
+      <AnimatePresence>
+        {lightboxImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+            onClick={() => setLightboxImage(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="relative max-w-3xl w-full max-h-[90vh] flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setLightboxImage(null)}
+                className="absolute -top-12 right-0 text-white/80 hover:text-white transition-colors z-10"
+              >
+                <X className="w-8 h-8" />
+              </button>
+
+              {/* Image */}
+              <img
+                src={lightboxImage.src}
+                alt={lightboxImage.name}
+                className="max-w-full max-h-[85vh] w-auto h-auto object-contain rounded-2xl shadow-2xl"
+              />
+
+              {/* Product name caption */}
+              <div className="absolute -bottom-10 left-0 right-0 text-center">
+                <p className="text-white/70 text-sm font-medium">{lightboxImage.name}</p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Search, ArrowRight, Filter, Wind, Settings2, Gauge, Cable, Layers, Zap, Leaf, Star, Settings } from 'lucide-react';
-import { brands, categories } from '../data/products';
+import { Search, ArrowRight, Filter, Wind, Settings2, Gauge, Cable, Layers, Zap, Leaf, Star, Settings, Loader2 } from 'lucide-react';
+import { useBrands, useCategories } from '../hooks/useSiteData';
 import { useScrollAnimation, fadeUpVariants, staggerContainer, staggerItem } from '../hooks/useScrollAnimation';
 
 const iconMap = { Wind, Settings2, Gauge, Cable, Layers, Zap, Leaf, Star, Settings, Filter };
@@ -11,6 +11,8 @@ export default function Products() {
   const [activeBrand, setActiveBrand] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const { ref, isInView } = useScrollAnimation();
+  const { brands } = useBrands();
+  const { categories } = useCategories();
 
   const filteredCategories = categories.filter((cat) => {
     const matchesBrand = activeBrand === 'all' || cat.brandId === activeBrand;
@@ -18,7 +20,7 @@ export default function Products() {
       !searchQuery ||
       cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       cat.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      cat.products.some((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+      (cat.products || []).some((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesBrand && matchesSearch;
   });
 

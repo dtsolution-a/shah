@@ -156,7 +156,7 @@ export default function Testimonials({
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
-                className="relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-soft overflow-hidden pb-24"
+                className="relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-8 md:p-10 shadow-soft overflow-hidden flex flex-col justify-between"
               >
                 {/* Background accent */}
                 <div
@@ -180,57 +180,60 @@ export default function Testimonials({
 
                 {/* Author */}
                 <div className="mt-8">
-                  <div className="flex items-center gap-4">
+                  <div className="flex flex-wrap sm:flex-nowrap items-center gap-4">
                     <div
                       className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
                       style={{ background: t.color }}
                     >
                       {t.avatar}
                     </div>
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p className="font-bold text-gray-900 dark:text-white">{t.name}</p>
                       <p className="text-sm text-gray-500 dark:text-gray-400">{t.title}</p>
                     </div>
-                  </div>
-                  <div className="mt-4">
-                    <span
-                      className="inline-flex px-3 py-1 rounded-full text-[11px] font-semibold"
-                      style={{ background: `${t.color}15`, color: t.color }}
-                    >
-                      {t.industry}
-                    </span>
+                    <div>
+                      <span
+                        className="inline-flex px-3 py-1 rounded-full text-[11px] font-semibold"
+                        style={{ background: `${t.color}15`, color: t.color }}
+                      >
+                        {t.industry}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Nav arrows */}
-                <div className="absolute bottom-8 right-6 flex gap-2 z-30">
-                  <button
-                    onClick={() => go(-1)}
-                    className="w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
-                  >
-                    <ChevronLeft className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                  </button>
-                  <button
-                    onClick={() => go(1)}
-                    className="w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
-                  >
-                    <ChevronRight className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                  </button>
-                </div>
+                {/* Footer Controls */}
+                <div className="mt-10 flex items-center justify-between">
+                  {/* Progress dots */}
+                  <div className="flex gap-1.5">
+                    {testimonials.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => { setAutoplay(false); setActive(i); }}
+                        className="h-1.5 rounded-full transition-all duration-300"
+                        style={{
+                          width: i === active ? '24px' : '6px',
+                          background: i === active ? t.color : '#D1D5DB',
+                        }}
+                      />
+                    ))}
+                  </div>
 
-                {/* Progress dots */}
-                <div className="absolute bottom-6 left-6 flex gap-1.5 z-20">
-                  {testimonials.map((_, i) => (
+                  {/* Nav arrows */}
+                  <div className="flex gap-2">
                     <button
-                      key={i}
-                      onClick={() => { setAutoplay(false); setActive(i); }}
-                      className="h-1.5 rounded-full transition-all duration-300"
-                      style={{
-                        width: i === active ? '24px' : '6px',
-                        background: i === active ? t.color : '#D1D5DB',
-                      }}
-                    />
-                  ))}
+                      onClick={() => go(-1)}
+                      className="w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
+                    >
+                      <ChevronLeft className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                    </button>
+                    <button
+                      onClick={() => go(1)}
+                      className="w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
+                    >
+                      <ChevronRight className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             </AnimatePresence>
