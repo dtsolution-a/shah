@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Package, Tag, ShoppingBag, FileText, MessageSquare, TrendingUp, AlertCircle, Star, Briefcase } from 'lucide-react';
+import { Package, Tag, ShoppingBag, FileText, MessageSquare, TrendingUp, AlertCircle, Star, Briefcase, Sliders, Layers, Image, UserCheck } from 'lucide-react';
 import api from './AdminAPI';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
-    brands: 0, categories: 0, products: 0, blogPosts: 0, unreadContacts: 0, testimonials: 0, jobs: 0
+    brands: 0, categories: 0, products: 0, blogPosts: 0, unreadContacts: 0, testimonials: 0, jobs: 0,
+    heroSlides: 0, solutions: 0, galleryPhotos: 0, unreadApplications: 0
   });
   const [loading, setLoading] = useState(true);
 
@@ -14,7 +15,7 @@ export default function AdminDashboard() {
 
   const loadStats = async () => {
     try {
-      const [brands, categories, products, blog, contacts, testimonials, jobs] = await Promise.all([
+      const [brands, categories, products, blog, contacts, testimonials, jobs, solutions, gallery, slides, applications] = await Promise.all([
         api.getBrands(),
         api.getCategories(),
         api.getProducts(),
@@ -22,6 +23,10 @@ export default function AdminDashboard() {
         api.getContacts(0), // unread only
         api.request('GET', '/testimonials').catch(() => []),
         api.request('GET', '/jobs').catch(() => []),
+        api.request('GET', '/solutions').catch(() => []),
+        api.request('GET', '/gallery').catch(() => []),
+        api.request('GET', '/hero-slides').catch(() => []),
+        api.request('GET', '/applications').catch(() => []),
       ]);
       setStats({
         brands: brands.length,
@@ -31,6 +36,10 @@ export default function AdminDashboard() {
         unreadContacts: contacts.length,
         testimonials: Array.isArray(testimonials) ? testimonials.length : (testimonials.testimonials || []).length,
         jobs: Array.isArray(jobs) ? jobs.length : (jobs.jobs || []).length,
+        solutions: Array.isArray(solutions) ? solutions.length : 0,
+        galleryPhotos: Array.isArray(gallery) ? gallery.length : 0,
+        heroSlides: Array.isArray(slides) ? slides.length : 0,
+        unreadApplications: Array.isArray(applications) ? applications.filter(a => !a.is_read).length : 0,
       });
     } catch (err) {
       console.error('Failed to load stats:', err);
@@ -40,13 +49,17 @@ export default function AdminDashboard() {
   };
 
   const cards = [
+    { label: 'Hero Slides', value: stats.heroSlides, icon: Sliders, color: 'bg-indigo-500', href: '/admin/hero-slides' },
     { label: 'Brands', value: stats.brands, icon: Package, color: 'bg-blue-500', href: '/admin/brands' },
     { label: 'Categories', value: stats.categories, icon: Tag, color: 'bg-purple-500', href: '/admin/categories' },
     { label: 'Products', value: stats.products, icon: ShoppingBag, color: 'bg-green-500', href: '/admin/products' },
+    { label: 'Solutions', value: stats.solutions, icon: Layers, color: 'bg-pink-500', href: '/admin/solutions' },
+    { label: 'Gallery Photos', value: stats.galleryPhotos, icon: Image, color: 'bg-cyan-500', href: '/admin/gallery' },
     { label: 'Blog Posts', value: stats.blogPosts, icon: FileText, color: 'bg-orange-500', href: '/admin/blog' },
     { label: 'Unread Enquiries', value: stats.unreadContacts, icon: MessageSquare, color: 'bg-red-500', href: '/admin/contacts' },
     { label: 'Testimonials', value: stats.testimonials, icon: Star, color: 'bg-yellow-500', href: '/admin/testimonials' },
     { label: 'Jobs', value: stats.jobs, icon: Briefcase, color: 'bg-teal-500', href: '/admin/jobs' },
+    { label: 'Unread Applications', value: stats.unreadApplications, icon: UserCheck, color: 'bg-emerald-500', href: '/admin/applications' },
   ];
 
   if (loading) {
@@ -65,7 +78,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
         {cards.map(card => (
           <a
             key={card.label}
@@ -85,6 +98,10 @@ export default function AdminDashboard() {
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <a href="/admin/hero-slides" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+            <Sliders className="w-5 h-5 text-indigo-500" />
+            <span className="text-sm font-medium text-gray-700">Manage Hero Slides</span>
+          </a>
           <a href="/admin/brands" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <Package className="w-5 h-5 text-blue-500" />
             <span className="text-sm font-medium text-gray-700">Add New Brand</span>
@@ -96,6 +113,14 @@ export default function AdminDashboard() {
           <a href="/admin/products" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <ShoppingBag className="w-5 h-5 text-green-500" />
             <span className="text-sm font-medium text-gray-700">Add New Product</span>
+          </a>
+          <a href="/admin/solutions" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+            <Layers className="w-5 h-5 text-pink-500" />
+            <span className="text-sm font-medium text-gray-700">Manage Solutions</span>
+          </a>
+          <a href="/admin/gallery" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+            <Image className="w-5 h-5 text-cyan-500" />
+            <span className="text-sm font-medium text-gray-700">Manage Gallery</span>
           </a>
           <a href="/admin/blog" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <FileText className="w-5 h-5 text-orange-500" />
@@ -113,6 +138,10 @@ export default function AdminDashboard() {
             <Briefcase className="w-5 h-5 text-teal-500" />
             <span className="text-sm font-medium text-gray-700">Manage Jobs</span>
           </a>
+          <a href="/admin/applications" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+            <UserCheck className="w-5 h-5 text-emerald-500" />
+            <span className="text-sm font-medium text-gray-700">View Applications</span>
+          </a>
           <a href="/" target="_blank" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <TrendingUp className="w-5 h-5 text-gray-500" />
             <span className="text-sm font-medium text-gray-700">View Live Website</span>
@@ -120,18 +149,35 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Info */}
-      {stats.unreadContacts > 0 && (
-        <div className="mt-6 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" />
-          <div>
-            <p className="text-sm font-medium text-amber-800">
-              You have {stats.unreadContacts} unread enquiry{stats.unreadContacts > 1 ? 'ies' : 'y'}
-            </p>
-            <a href="/admin/contacts" className="text-sm text-amber-600 hover:underline mt-1 inline-block">
-              View enquiries →
-            </a>
-          </div>
+      {/* Info Banners */}
+      {(stats.unreadContacts > 0 || stats.unreadApplications > 0) && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+          {stats.unreadContacts > 0 && (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-amber-800">
+                  You have {stats.unreadContacts} unread enquiry{stats.unreadContacts > 1 ? 'ies' : 'y'}
+                </p>
+                <a href="/admin/contacts" className="text-sm text-amber-600 hover:underline mt-1 inline-block">
+                  View enquiries →
+                </a>
+              </div>
+            </div>
+          )}
+          {stats.unreadApplications > 0 && (
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-emerald-800">
+                  You have {stats.unreadApplications} unread job application{stats.unreadApplications > 1 ? 's' : ''}
+                </p>
+                <a href="/admin/applications" className="text-sm text-emerald-600 hover:underline mt-1 inline-block">
+                  View applications →
+                </a>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

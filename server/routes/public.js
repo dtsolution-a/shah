@@ -1,7 +1,43 @@
 import { Router } from 'express';
 import db from '../db.js';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { v4 as uuidv4 } from 'uuid';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const uploadsDir = path.join(__dirname, '../../uploads');
 
 const router = Router();
+
+// Setup multer for resume CV uploads (PDF only, max 1MB)
+const resumeStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dest = path.join(uploadsDir, 'resumes');
+    if (!fs.existsSync(dest)) {
+      fs.mkdirSync(dest, { recursive: true });
+    }
+    cb(null, dest);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    cb(null, `${uuidv4()}${ext}`);
+  }
+});
+
+const uploadResume = multer({
+  storage: resumeStorage,
+  limits: { fileSize: 1 * 1024 * 1024 }, // 1MB size limit
+  fileFilter: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (ext === '.pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF files are allowed.'));
+    }
+  }
+}).single('resume');
 
 // GET brands with category & product counts
 router.get('/brands', (req, res) => {
@@ -119,4 +155,52 @@ router.get('/jobs', (req, res) => {
   const jobs = db.prepare('SELECT * FROM career_jobs WHERE is_active = 1 ORDER BY sort_order ASC, created_at DESC').all();
   res.json(jobs);
 });
+
+// GET active industrial solutions
+router.get('/solutions', (req, res) => {
+  const list = db.prepare('SELECT * FROM solutions WHERE is_active = 1 ORDER BY sort_order ASC, name ASC').all();
+  res.json(list);
+});
+
+// GET active gallery photos
+router.get('/gallery', (req, res) => {
+  const list = db.prepare('SELECT * FROM gallery_photos WHERE is_active = 1 ORDER BY sort_order ASC, created_at DESC').all();
+  res.json(list);
+});
+
+// GET active hero slides
+router.get('/hero-slides', (req, res) => {
+  const list = db.prepare('SELECT * FROM hero_slides WHERE is_active = 1 ORDER BY sort_order ASC').all();
+  res.json(list);
+});
+
+// POST upload PDF resume
+router.post('/upload-resume', (req, res) => {
+  uploadResume(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded.' });
+    }
+    const url = `/uploads/resumes/${req.file.filename}`;
+    res.json({ url });
+  });
+});
+
+// POST submit career application
+router.post('/apply', (req, res) => {
+  const { name, email, phone, message, resume_url } = req.body;
+  if (!name || !email) {
+    return res.status(400).json({ error: 'Name and email are required.' });
+  }
+
+  const result = db.prepare(`
+    INSERT INTO career_applications (name, email, phone, message, resume_url, is_read)
+    VALUES (?, ?, ?, ?, ?, 0)
+  `).run(name, email, phone || '', message || '', resume_url || '');
+
+  res.status(201).json({ id: result.lastInsertRowid, message: 'Application submitted successfully!' });
+});
+
 export default router;

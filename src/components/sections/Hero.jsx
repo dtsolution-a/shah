@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ChevronDown, Zap, Shield, Award, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useHeroSlides } from '../../hooks/useSiteData';
 
 const slides = [
   {
@@ -52,16 +53,19 @@ const badges = [
 ];
 
 export default function Hero() {
+  const { slides: dbSlides } = useHeroSlides();
   const [current, setCurrent] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
+  const activeSlides = dbSlides && dbSlides.length > 0 ? dbSlides : slides;
+
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || activeSlides.length <= 1) return;
     const timer = setInterval(() => {
-      setCurrent((c) => (c + 1) % slides.length);
+      setCurrent((c) => (c + 1) % activeSlides.length);
     }, 5500);
     return () => clearInterval(timer);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, activeSlides]);
 
   const goTo = (idx) => {
     setCurrent(idx);
@@ -69,10 +73,10 @@ export default function Hero() {
     setTimeout(() => setIsAutoPlaying(true), 9000);
   };
 
-  const prev = () => goTo((current - 1 + slides.length) % slides.length);
-  const next = () => goTo((current + 1) % slides.length);
+  const prev = () => goTo((current - 1 + activeSlides.length) % activeSlides.length);
+  const next = () => goTo((current + 1) % activeSlides.length);
 
-  const slide = slides[current];
+  const slide = activeSlides[current];
 
   return (
     <section className="relative flex flex-col overflow-hidden bg-[#0a0f1e]" style={{ minHeight: 'calc(100vh - 112px)' }}>
@@ -226,7 +230,7 @@ export default function Hero() {
 
             {/* Progress dots */}
             <div className="flex items-center gap-1.5">
-              {slides.map((_, i) => (
+              {activeSlides.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => goTo(i)}
@@ -262,7 +266,7 @@ export default function Hero() {
             </button>
 
             <span className="text-[11px] font-mono text-white/35 ml-1 tabular-nums">
-              {String(current + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+              {String(current + 1).padStart(2, '0')} / {String(activeSlides.length).padStart(2, '0')}
             </span>
           </div>
 

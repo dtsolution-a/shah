@@ -12,6 +12,10 @@ import contactRoutes from './routes/contacts.js';
 import publicRoutes from './routes/public.js';
 import testimonialsRoutes from './routes/testimonials.js';
 import jobsRoutes from './routes/jobs.js';
+import solutionsRoutes from './routes/solutions.js';
+import galleryRoutes from './routes/gallery.js';
+import heroRoutes from './routes/hero.js';
+import applicationsRoutes from './routes/applications.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -55,6 +59,10 @@ app.use('/api/contacts', contactRoutes);
 app.use('/api/public', publicRoutes);
 app.use('/api/testimonials', testimonialsRoutes);
 app.use('/api/jobs', jobsRoutes);
+app.use('/api/solutions', solutionsRoutes);
+app.use('/api/gallery', galleryRoutes);
+app.use('/api/hero-slides', heroRoutes);
+app.use('/api/applications', applicationsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

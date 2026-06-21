@@ -1,5 +1,6 @@
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Briefcase, GraduationCap, Heart, ArrowRight, Clock, Loader2 } from 'lucide-react';
+import { MapPin, Briefcase, GraduationCap, Heart, ArrowRight, Clock, Loader2, Upload, CheckCircle } from 'lucide-react';
 import { useScrollAnimation, fadeUpVariants } from '../hooks/useScrollAnimation';
 import { useJobs } from '../hooks/useSiteData';
 import Testimonials from '../components/sections/Testimonials';
@@ -15,6 +16,103 @@ const perks = [
 export default function Career() {
   const { ref, isInView } = useScrollAnimation();
   const { jobs, loading } = useJobs();
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
+  });
+  const [resume, setResume] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
+  const fileInputRef = useRef(null);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.type !== 'application/pdf') {
+      setError('Only PDF format is supported.');
+      setResume(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
+    if (file.size > 1024 * 1024) {
+      setError('File size exceeds the 1MB limit.');
+      setResume(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
+    setError(null);
+    setResume(file);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email) {
+      setError('Name and Email are required.');
+      return;
+    }
+    if (!resume) {
+      setError('Please upload your PDF resume.');
+      return;
+    }
+
+    setUploading(true);
+    setError(null);
+
+    try {
+      const API_BASE = import.meta.env.VITE_API_URL || '';
+      const formDataUpload = new FormData();
+      formDataUpload.append('resume', resume);
+
+      const uploadRes = await fetch(`${API_BASE}/api/public/upload-resume`, {
+        method: 'POST',
+        body: formDataUpload
+      });
+
+      if (!uploadRes.ok) {
+        const errData = await uploadRes.json();
+        throw new Error(errData.error || 'Failed to upload resume.');
+      }
+
+      const { url } = await uploadRes.json();
+
+      const applyRes = await fetch(`${API_BASE}/api/public/apply`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...formData,
+          resume_url: url
+        })
+      });
+
+      if (!applyRes.ok) {
+        const errData = await applyRes.json();
+        throw new Error(errData.error || 'Failed to submit application.');
+      }
+
+      setSuccess(true);
+      setFormData({ name: '', email: '', phone: '', message: '' });
+      setResume(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    } catch (err) {
+      setError(err.message || 'An error occurred during submission.');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   return (
     <div>
@@ -149,22 +247,167 @@ export default function Career() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="mt-8 card p-8 bg-gray-50 dark:bg-gray-900 border-dashed text-center"
+            className="mt-12 card p-8 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl"
           >
-            <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-2">
-              Don't see your role?
-            </h3>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mb-6 max-w-md mx-auto">
-              We're always looking for talented engineers and sales professionals. Send us your resume 
-              and we'll reach out when the right opportunity arises.
-            </p>
-            <a
-              href="mailto:info@shahgroup.co?subject=Open Application — Shah Group"
-              className="btn-secondary inline-flex"
-            >
-              Send Open Application
-              <ArrowRight className="w-4 h-4" />
-            </a>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              {/* Left Column: Description */}
+              <div className="lg:col-span-5 text-left">
+                <span className="badge-blue mb-4">Join Our Talent Pool</span>
+                <h3 className="font-bold text-gray-900 dark:text-white text-2xl mb-4 leading-tight">
+                  Don't see your role?
+                </h3>
+                <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6">
+                  We're always looking for talented engineers, sales professionals, and managers. 
+                  Submit your resume to our general pool and we'll reach out as soon as a role aligns with your experience.
+                </p>
+                <div className="flex flex-col gap-3 text-xs text-gray-400 dark:text-gray-500">
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                    <span>General applications are reviewed weekly</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                    <span>Please upload CV in PDF format only</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                    <span>Maximum resume file size is 1MB</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Interactive Form */}
+              <div className="lg:col-span-7 bg-white dark:bg-gray-950 p-6 rounded-2xl border border-gray-150 dark:border-gray-800 shadow-sm text-left">
+                {success ? (
+                  <div className="text-center py-8">
+                    <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4 animate-bounce" />
+                    <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Application Submitted!</h4>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                      Thank you for applying. Our recruiting team will review your profile and contact you shortly if it matches our needs.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setSuccess(false)}
+                      className="btn-secondary text-sm py-2 px-4"
+                    >
+                      Submit Another Application
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    {error && (
+                      <div className="p-3 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 rounded-lg text-xs font-semibold border border-red-100 dark:border-red-900/50">
+                        {error}
+                      </div>
+                    )}
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                          Full Name *
+                        </label>
+                        <input
+                          type="text"
+                          name="name"
+                          required
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:border-accent focus:ring-1 focus:ring-accent text-gray-900 dark:text-white"
+                          placeholder="e.g. John Doe"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                          Email Address *
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          required
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:border-accent focus:ring-1 focus:ring-accent text-gray-900 dark:text-white"
+                          placeholder="e.g. john@example.com"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                          Phone Number
+                        </label>
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:border-accent focus:ring-1 focus:ring-accent text-gray-900 dark:text-white"
+                          placeholder="e.g. +91 9876543210"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                          Resume (PDF only, max 1MB) *
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="file"
+                            accept=".pdf"
+                            required
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                            className="hidden"
+                            id="resume-file-input"
+                          />
+                          <label
+                            htmlFor="resume-file-input"
+                            className="flex items-center justify-center gap-2 w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl cursor-pointer hover:border-accent/40 text-gray-600 dark:text-gray-400 hover:text-accent transition-all"
+                          >
+                            <Upload className="w-4 h-4" />
+                            <span className="truncate max-w-[180px]">
+                              {resume ? resume.name : 'Select PDF File'}
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                        Brief Cover Letter / Details
+                      </label>
+                      <textarea
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        rows={3}
+                        className="w-full px-3 py-2 text-sm bg-gray-55 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800 rounded-xl focus:border-accent focus:ring-1 focus:ring-accent text-gray-900 dark:text-white resize-none"
+                        placeholder="Tell us about yourself and what role you're looking for..."
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={uploading}
+                      className="w-full btn-primary justify-center text-sm py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed group transition-all"
+                    >
+                      {uploading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Uploading & Submitting...
+                        </>
+                      ) : (
+                        <>
+                          Submit Application
+                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </>
+                      )}
+                    </button>
+                  </form>
+                )}
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>

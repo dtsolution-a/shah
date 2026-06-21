@@ -10,7 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const uploadsDir = path.join(__dirname, '../../uploads');
 
 // Ensure upload directories exist
-const dirs = ['brands', 'categories', 'products', 'blog', 'general'];
+const dirs = ['brands', 'categories', 'products', 'blog', 'general', 'resumes'];
 dirs.forEach(dir => {
   const fullPath = path.join(uploadsDir, dir);
   if (!fs.existsSync(fullPath)) {

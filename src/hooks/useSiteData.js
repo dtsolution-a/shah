@@ -386,3 +386,244 @@ export function useJobs() {
 
   return { jobs: data, loading };
 }
+
+// Fallback Solutions data
+const fallbackSolutions = [
+  {
+    id: 'compressed-air',
+    icon: 'Wind',
+    name: 'Compressed Air Systems',
+    description: 'Complete air generation, treatment & distribution from leading brands',
+    brands: 'Parker, Kaishan, Chicago Pneumatic, Trident',
+    href: '/products',
+    image: '/images/categories/compressed-air.jpg',
+    accent: '#2563EB',
+    number: '01',
+  },
+  {
+    id: 'pneumatics',
+    icon: 'Settings2',
+    name: 'Pneumatics & Automation',
+    description: 'Cylinders, solenoid valves, fittings, tubing & FRL units for automation',
+    brands: 'Parker',
+    href: '/products/parker/pneumatics',
+    image: '/images/categories/pneumatics.jpg',
+    accent: '#6366f1',
+    number: '02',
+  },
+  {
+    id: 'instrumentation',
+    icon: 'Gauge',
+    name: 'Instrumentation',
+    description: 'High-pressure fittings, needle valves, manifolds & process components',
+    brands: 'Parker',
+    href: '/products/parker/instrumentation',
+    image: '/images/categories/instrumentation.jpg',
+    accent: '#8b5cf6',
+    number: '03',
+  },
+  {
+    id: 'hydraulics',
+    icon: 'Cable',
+    name: 'Hydraulics',
+    description: 'Hoses, fittings, adapters, filters & condition monitoring equipment',
+    brands: 'Parker',
+    href: '/products/parker/hydraulic-connectors',
+    image: '/images/categories/hydraulics.jpg',
+    accent: '#0891b2',
+    number: '04',
+  },
+  {
+    id: 'gas-gen',
+    icon: 'Zap',
+    name: 'Gas Generation',
+    description: 'On-site nitrogen, hydrogen & zero-air generators for labs & industry',
+    brands: 'Parker',
+    href: '/products/parker/gas-generator',
+    image: '/images/categories/gas-generation.jpg',
+    accent: '#d97706',
+    number: '05',
+  },
+  {
+    id: 'clean-energy',
+    icon: 'Leaf',
+    name: 'Clean Energy — CNG & H₂',
+    description: 'Fueling infrastructure for CNG and hydrogen stations across India',
+    brands: 'Parker',
+    href: '/products/parker/clean-energy',
+    image: '/images/categories/clean-energy.jpg',
+    accent: '#16a34a',
+    number: '06',
+  },
+];
+
+// Fallback Gallery data
+const fallbackGallery = [
+  { id: 'o1', url: '/images/gallery/office/office-1.jpg', title: 'Shah Group Office' },
+  { id: 'o2', url: '/images/gallery/office/office-2.jpg', title: 'Office workspace' },
+  { id: 'o3', url: '/images/gallery/office/office-3.jpg', title: 'Reception area' },
+  { id: 'o4', url: '/images/gallery/office/office-4.jpg', title: 'Conference room' },
+  { id: 'm1', url: '/images/gallery/machinery/machinery-1.jpg', title: 'Industrial machinery' },
+  { id: 'm2', url: '/images/gallery/machinery/machinery-2.jpg', title: 'Equipment display' },
+  { id: 'm3', url: '/images/gallery/machinery/machinery-3.jpg', title: 'Compressor systems' },
+  { id: 'm4', url: '/images/gallery/machinery/machinery-4.jpg', title: 'Hydraulic systems' },
+  { id: 's1', url: '/images/gallery/store/store-1.jpg', title: 'Product store' },
+  { id: 's2', url: '/images/gallery/store/store-2.jpg', title: 'Spare parts inventory' },
+  { id: 'w1', url: '/images/gallery/workshop/workshop-1.jpg', title: 'Workshop floor' },
+  { id: 't1', url: '/images/gallery/team/team-1.jpg', title: 'Shah Group team' },
+  { id: 't5', url: '/images/gallery/team/team-5.jpg', title: 'Kaushik Shah — Founder' },
+];
+
+// Fallback Hero Slides
+const fallbackHeroSlides = [
+  {
+    id: 1,
+    image: '/images/hero/slide-1.jpg',
+    tag: 'Parker Hannifin · Authorized Distributor',
+    headline: "India's Trusted Partner for Industrial Fluid Power",
+    sub: 'Pneumatics · Hydraulics · Instrumentation · Compressed Air Systems',
+    accent: 'from-blue-600/20 to-indigo-900/60',
+  },
+  {
+    id: 2,
+    image: '/images/hero/slide-2.jpg',
+    tag: 'Kaishan & Chicago Pneumatic · Distributor',
+    headline: 'World-Class Air Compressor Solutions for Every Industry',
+    sub: 'Oil-Free · Rotary Screw · Reciprocating · Energy-Efficient Systems',
+    accent: 'from-sky-700/20 to-blue-950/60',
+  },
+  {
+    id: 3,
+    image: '/images/hero/slide-3.jpg',
+    tag: 'Tubacex & Trident · Authorized Representative',
+    headline: '30+ Years of Technical Excellence in Surat, Gujarat',
+    sub: 'SS Tubes · Air Purification · Gas Generation · Clean Energy',
+    accent: 'from-indigo-700/20 to-slate-950/60',
+  },
+  {
+    id: 4,
+    image: '/images/hero/slide-4.jpg',
+    tag: 'Parker Clean Energy · CNG & Hydrogen',
+    headline: "Powering India's Clean Energy Future",
+    sub: 'CNG Dispensers · Hydrogen Fueling Infrastructure · Zero-Emission',
+    accent: 'from-teal-700/20 to-blue-950/60',
+  },
+];
+
+// Hook to fetch active industrial solutions
+export function useSolutions() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [version, setVersion] = useState(0);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    const handler = () => setVersion(v => v + 1);
+    listeners.add(handler);
+    return () => { listeners.delete(handler); mountedRef.current = false; };
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchWithTimeout(bustCache(`${API}/solutions`))
+      .then(r => { if (!r.ok) throw new Error('Failed'); return r.json(); })
+      .then(d => {
+        if (mountedRef.current) {
+          if (d && d.length > 0) {
+            setData(d);
+          } else {
+            setData(fallbackSolutions);
+          }
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (mountedRef.current) {
+          setData(fallbackSolutions);
+          setLoading(false);
+        }
+      });
+  }, [version]);
+
+  return { data, solutions: data, loading };
+}
+
+// Hook to fetch active gallery photos
+export function useGalleryPhotos() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [version, setVersion] = useState(0);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    const handler = () => setVersion(v => v + 1);
+    listeners.add(handler);
+    return () => { listeners.delete(handler); mountedRef.current = false; };
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchWithTimeout(bustCache(`${API}/gallery`))
+      .then(r => { if (!r.ok) throw new Error('Failed'); return r.json(); })
+      .then(d => {
+        if (mountedRef.current) {
+          if (d && d.length > 0) {
+            setData(d);
+          } else {
+            setData(fallbackGallery);
+          }
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (mountedRef.current) {
+          setData(fallbackGallery);
+          setLoading(false);
+        }
+      });
+  }, [version]);
+
+  return { data, photos: data, loading };
+}
+
+// Hook to fetch active hero slides
+export function useHeroSlides() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [version, setVersion] = useState(0);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    const handler = () => setVersion(v => v + 1);
+    listeners.add(handler);
+    return () => { listeners.delete(handler); mountedRef.current = false; };
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchWithTimeout(bustCache(`${API}/hero-slides`))
+      .then(r => { if (!r.ok) throw new Error('Failed'); return r.json(); })
+      .then(d => {
+        if (mountedRef.current) {
+          if (d && d.length > 0) {
+            setData(d);
+          } else {
+            setData(fallbackHeroSlides);
+          }
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (mountedRef.current) {
+          setData(fallbackHeroSlides);
+          setLoading(false);
+        }
+      });
+  }, [version]);
+
+  return { data, slides: data, loading };
+}
+

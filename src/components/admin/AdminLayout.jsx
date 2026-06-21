@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Package, Tag, ShoppingBag, FileText,
-  MessageSquare, LogOut, Menu, X, Shield, ChevronDown, Star, Briefcase
+  MessageSquare, LogOut, Menu, X, Shield, ChevronDown, Star, Briefcase,
+  Sliders, Layers, Image, UserCheck
 } from 'lucide-react';
 import api from '../../pages/admin/AdminAPI';
 
@@ -31,13 +32,17 @@ export default function AdminLayout() {
 
   const navItems = [
     { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
+    { to: '/admin/hero-slides', icon: Sliders, label: 'Hero Slides' },
     { to: '/admin/brands', icon: Package, label: 'Brands' },
     { to: '/admin/categories', icon: Tag, label: 'Categories' },
     { to: '/admin/products', icon: ShoppingBag, label: 'Products' },
+    { to: '/admin/solutions', icon: Layers, label: 'Solutions' },
+    { to: '/admin/gallery', icon: Image, label: 'Gallery' },
     { to: '/admin/blog', icon: FileText, label: 'Blog Posts' },
     { to: '/admin/contacts', icon: MessageSquare, label: 'Enquiries' },
     { to: '/admin/testimonials', icon: Star, label: 'Testimonials' },
     { to: '/admin/jobs', icon: Briefcase, label: 'Jobs' },
+    { to: '/admin/applications', icon: UserCheck, label: 'Applications' },
   ];
 
   const isActive = (path, end) => {

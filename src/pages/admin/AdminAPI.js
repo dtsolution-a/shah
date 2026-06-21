@@ -119,6 +119,32 @@ class AdminAPI {
   deleteFile(url) {
     return this.request('POST', '/upload/delete', { url });
   }
+
+  // Solutions
+  getSolutions() { return this.request('GET', '/solutions'); }
+  createSolution(data) { return this.request('POST', '/solutions', data); }
+  updateSolution(id, data) { return this.request('PUT', `/solutions/${id}`, data); }
+  deleteSolution(id) { return this.request('DELETE', `/solutions/${id}`); }
+
+  // Gallery
+  getGalleryPhotos() { return this.request('GET', '/gallery'); }
+  createGalleryPhoto(data) { return this.request('POST', '/gallery', data); }
+  updateGalleryPhoto(id, data) { return this.request('PUT', `/gallery/${id}`, data); }
+  deleteGalleryPhoto(id) { return this.request('DELETE', `/gallery/${id}`); }
+
+  // Hero Slides
+  getHeroSlides() { return this.request('GET', '/hero-slides'); }
+  createHeroSlide(data) { return this.request('POST', '/hero-slides', data); }
+  updateHeroSlide(id, data) { return this.request('PUT', `/hero-slides/${id}`, data); }
+  deleteHeroSlide(id) { return this.request('DELETE', `/hero-slides/${id}`); }
+
+  // Career Applications
+  getApplications() { return this.request('GET', '/applications'); }
+  getApplication(id) { return this.request('GET', `/applications/${id}`); }
+  deleteApplication(id) { return this.request('DELETE', `/applications/${id}`); }
+  markApplicationRead(id, isRead) {
+    return this.request('PATCH', `/applications/${id}/read`, { is_read: isRead });
+  }
 }
 
 const api = new AdminAPI();

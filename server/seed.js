@@ -1,7 +1,78 @@
 import db from './db.js';
 import bcrypt from 'bcryptjs';
+import XLSX from 'xlsx';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 
-// Seed default admin
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const baseDir = path.join(__dirname, '../public/images/p2');
+
+// ─── UTILS FOR RECURSIVE IMAGE SEARCH ─────────────────────────────────────────
+function findFileRecursive(dir, filename) {
+  if (!fs.existsSync(dir)) return null;
+  const list = fs.readdirSync(dir);
+  const baseNameWithoutExt = path.basename(filename, path.extname(filename)).toLowerCase();
+
+  // Handle Trident drain typo
+  let targetFilename = filename;
+  if (filename.toLowerCase() === 'drain.webp') {
+    targetFilename = 'frain.webp';
+  }
+
+  for (const item of list) {
+    const fullPath = path.join(dir, item);
+    const stat = fs.statSync(fullPath);
+    if (!stat.isDirectory()) {
+      if (item.toLowerCase() === targetFilename.toLowerCase()) {
+        return fullPath;
+      }
+      const itemWithoutExt = path.basename(item, path.extname(item)).toLowerCase();
+      if (itemWithoutExt === baseNameWithoutExt) {
+        return fullPath;
+      }
+    }
+  }
+
+  for (const item of list) {
+    const fullPath = path.join(dir, item);
+    const stat = fs.statSync(fullPath);
+    if (stat.isDirectory()) {
+      const found = findFileRecursive(fullPath, filename);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+function getImagePath(company, filename) {
+  if (!filename) return '';
+  if (!fs.existsSync(baseDir)) return '';
+  const list = fs.readdirSync(baseDir);
+  const actualCompanyDir = list.find(d => d.toLowerCase() === company.toLowerCase());
+  if (!actualCompanyDir) return '';
+  
+  const companyPath = path.join(baseDir, actualCompanyDir);
+  const found = findFileRecursive(companyPath, filename);
+  if (found) {
+    const rel = path.relative(path.join(__dirname, '../public'), found);
+    return '/' + rel.replace(/\\/g, '/');
+  }
+  return '';
+}
+
+function slugify(text) {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
+}
+
+// ─── SEED DEFAULT ADMIN ───────────────────────────────────────────────────────
 const adminExists = db.prepare('SELECT id FROM users WHERE username = ?').get('admin');
 if (!adminExists) {
   const hashed = bcrypt.hashSync('admin@123', 10);
@@ -11,71 +82,292 @@ if (!adminExists) {
   console.log('✓ Default admin created: admin / admin@123');
 }
 
-// Seed brands from products.js data
-import { brands, categories as catData } from '../src/data/products.js';
+// ─── CLEAR EXISTING CATALOG DATA ──────────────────────────────────────────────
+console.log('Clearing old product catalog data...');
+db.prepare('DELETE FROM products').run();
+db.prepare('DELETE FROM categories').run();
+db.prepare('DELETE FROM brands').run();
 
-for (const brand of brands) {
-  const existing = db.prepare('SELECT id FROM brands WHERE id = ?').get(brand.id);
-  if (!existing) {
-    db.prepare(`
-      INSERT INTO brands (id, name, shortName, tagline, color, description, logo, sort_order)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(brand.id, brand.name, brand.shortName, brand.tagline, brand.color, brand.description, brand.logo, 0);
-    console.log(`✓ Brand seeded: ${brand.name}`);
+// ─── BRAND METADATA MAPPING ──────────────────────────────────────────────────
+const brandMetadata = {
+  'parker': {
+    name: 'Parker Hannifin',
+    shortName: 'Parker',
+    tagline: 'Global leader in motion and control technologies',
+    color: '#FFD100',
+    description: 'Parker Hannifin is a Fortune 250 global leader in motion and control technologies, providing precision-engineered solutions for a wide variety of mobile, industrial and aerospace markets.',
+    logo: '/images/brands/parker.jpg',
+  },
+  'kaishan': {
+    name: 'Kaishan',
+    shortName: 'Kaishan',
+    tagline: 'World-class air compressor solutions',
+    color: '#E63946',
+    description: 'Kaishan is one of the world\'s largest manufacturers of air compressors, offering a comprehensive range from rotary screw to oil-free solutions for industrial applications.',
+    logo: '/images/brands/kaishan.png',
+  },
+  'chicago-pneumatic': {
+    name: 'Chicago Pneumatic',
+    shortName: 'Chicago Pneumatic',
+    tagline: 'Reliable compressed air solutions',
+    color: '#FF6B00',
+    description: 'Chicago Pneumatic has over 100 years of experience in industrial tools and air compressors, known globally for their reliability and performance.',
+    logo: '/images/brands/chicago-pneumatic.svg',
+  },
+  'tubacex': {
+    name: 'Tubacex',
+    shortName: 'Tubacex',
+    tagline: 'Premium stainless steel tubes & pipes',
+    color: '#2D6A4F',
+    description: 'Tubacex is a world leader in manufacturing seamless stainless steel tubes and pipes for the most demanding industrial applications.',
+    logo: '/images/brands/tubacex.png',
+  },
+  'trident': {
+    name: 'Trident',
+    shortName: 'Trident',
+    tagline: 'Advanced air purification systems',
+    color: '#4361EE',
+    description: 'Trident specializes in air drying, purification and separation systems, providing critical clean air solutions for industrial and breathing air applications.',
+    logo: '/images/brands/trident.png',
+  },
+  'opw': {
+    name: 'OPW Clean Energy Solutions',
+    shortName: 'OPW',
+    tagline: 'Fluid handling & clean energy fueling solutions',
+    color: '#0284C7',
+    description: 'OPW is a global leader in fluid handling solutions, offering clean energy fueling components for CNG, LNG, LPG and Hydrogen.',
+    logo: '/images/brands/opw.png',
+  },
+  'gajjar-compressor': {
+    name: 'Gajjar Compressor',
+    shortName: 'Gajjar',
+    tagline: 'High-quality industrial air compressors',
+    color: '#DC2626',
+    description: 'Gajjar Compressor offers durable and efficient air compressors designed for industrial applications.',
+    logo: '/images/brands/gajjar-compressor.png',
   }
+};
+
+// ─── PARSE EXCEL AND SEED ─────────────────────────────────────────────────────
+const excelPath = path.join(__dirname, '../public/Shah_Master_Product_Catalog_Detailed.xlsx');
+if (!fs.existsSync(excelPath)) {
+  console.error(`Error: Excel file not found at ${excelPath}`);
+  process.exit(1);
 }
 
-// Seed categories and products
-for (const cat of catData) {
-  const existingCat = db.prepare('SELECT id FROM categories WHERE id = ?').get(cat.id);
-  if (!existingCat) {
-    db.prepare(`
-      INSERT INTO categories (id, brandId, name, slug, icon, description, heroImage, sort_order)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(cat.id, cat.brandId, cat.name, cat.slug, cat.icon, cat.description, cat.heroImage || '', 0);
-    console.log(`  ✓ Category seeded: ${cat.name}`);
+const workbook = XLSX.readFile(excelPath);
+const sheet = workbook.Sheets[workbook.SheetNames[0]];
+const rows = XLSX.utils.sheet_to_json(sheet);
+
+console.log(`Parsing Excel file... Found ${rows.length} rows.`);
+
+const seededBrands = new Set();
+const seededCategories = new Set();
+
+const insertBrand = db.prepare(`
+  INSERT INTO brands (id, name, shortName, tagline, color, description, logo, sort_order)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+`);
+
+const insertCategory = db.prepare(`
+  INSERT INTO categories (id, brandId, name, slug, icon, description, heroImage, sort_order)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+`);
+
+const insertProduct = db.prepare(`
+  INSERT INTO products (id, categoryId, name, description, image, specs, sort_order)
+  VALUES (?, ?, ?, ?, ?, ?, ?)
+`);
+
+rows.forEach((row, index) => {
+  const company = row.Company;
+  const category = row.Category;
+  const name = row['Product Name'];
+  const desc = row['Short Description'];
+  const slug = row['SEO Slug'] || slugify(name);
+  const imageFilename = row['Image Filename'];
+  
+  if (!company || !category || !name) return;
+
+  const brandId = slugify(company);
+  const catSlug = slugify(category);
+  const catId = `${brandId}-${catSlug}`;
+  const prodId = `prod-${brandId}-${catSlug}-${index}`;
+
+  // 1. Seed Brand if not yet done
+  if (!seededBrands.has(brandId)) {
+    const meta = brandMetadata[brandId] || {
+      name: company,
+      shortName: company,
+      tagline: `${company} products`,
+      color: '#3B82F6',
+      description: `Premium solutions from ${company}.`,
+      logo: `/images/brands/${brandId}.png`
+    };
+    insertBrand.run(brandId, meta.name, meta.shortName, meta.tagline, meta.color, meta.description, meta.logo, 0);
+    seededBrands.add(brandId);
+    console.log(`✓ Brand seeded: ${meta.name}`);
   }
 
-  // Seed products within this category
-  if (cat.products) {
-    for (const prod of cat.products) {
-      const existingProd = db.prepare('SELECT id FROM products WHERE id = ?').get(prod.id);
-      if (!existingProd) {
-        db.prepare(`
-          INSERT INTO products (id, categoryId, name, description, image, specs, sort_order)
-          VALUES (?, ?, ?, ?, ?, ?, ?)
-        `).run(prod.id, cat.id, prod.name, prod.description, prod.image || '', JSON.stringify(prod.specs || []), 0);
-      }
-    }
-    console.log(`    ✓ ${cat.products.length} products seeded for ${cat.name}`);
-  }
-}
+  // 2. Seed Category if not yet done
+  if (!seededCategories.has(catId)) {
+    let icon = 'Package';
+    if (catSlug.includes('pneumatics')) icon = 'Wind';
+    else if (catSlug.includes('control') || catSlug.includes('distribution')) icon = 'Settings2';
+    else if (catSlug.includes('instrument')) icon = 'Gauge';
+    else if (catSlug.includes('hydra')) icon = 'Cable';
+    else if (catSlug.includes('gas') || catSlug.includes('gen')) icon = 'Zap';
+    else if (catSlug.includes('clean') || catSlug.includes('cng') || catSlug.includes('hydro')) icon = 'Leaf';
+    else if (catSlug.includes('tube') || catSlug.includes('pipe')) icon = 'Database';
+    else if (catSlug.includes('treatment') || catSlug.includes('dry')) icon = 'Filter';
 
-// Seed blog posts from static data
-import { blogPosts as blogData } from '../src/data/blog.js';
-
-for (const post of blogData) {
-  const existing = db.prepare('SELECT id FROM blog_posts WHERE slug = ?').get(post.slug);
-  if (!existing) {
-    db.prepare(`
-      INSERT OR IGNORE INTO blog_posts (title, slug, excerpt, content, author, image, category, tags, is_published, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(
-      post.title,
-      post.slug,
-      post.excerpt,
-      post.content,
-      post.author || 'Admin',
-      post.cover || '',
-      post.category || 'General',
-      Array.isArray(post.tags) ? post.tags.join(', ') : (post.tags || ''),
-      1,
-      post.date || new Date().toISOString()
-    );
-    console.log(`  ✓ Blog seeded: ${post.title}`);
+    const catDesc = `${category} solutions from ${company}`;
+    insertCategory.run(catId, brandId, category, catSlug, icon, catDesc, '', 0);
+    seededCategories.add(catId);
+    console.log(`  ✓ Category seeded: ${category} (${company})`);
   }
-}
-const blogCount = db.prepare('SELECT COUNT(*) as cnt FROM blog_posts').get();
-console.log(`  → ${blogCount.cnt} blog posts in database`);
+
+  // 3. Match and seed Product
+  const imagePath = getImagePath(company, imageFilename);
+  const tags = [row['Tag 1'], row['Tag 2'], row['Tag 3']].filter(Boolean);
+  
+  insertProduct.run(prodId, catId, name, desc || '', imagePath, JSON.stringify(tags), 0);
+});
+
+console.log(`✓ Seeded ${rows.length} products successfully!`);
+
+// ─── SEED HERO SLIDES ────────────────────────────────────────────────────────
+console.log('Seeding default hero slides...');
+db.prepare('DELETE FROM hero_slides').run();
+
+const insertHero = db.prepare(`
+  INSERT INTO hero_slides (image, tag, headline, sub, accent, sort_order)
+  VALUES (?, ?, ?, ?, ?, ?)
+`);
+
+insertHero.run(
+  '/images/hero/slide-1.jpg',
+  'Parker Hannifin · Authorized Distributor',
+  "India's Trusted Partner for Industrial Fluid Power",
+  'Pneumatics · Hydraulics · Instrumentation · Compressed Air Systems',
+  'from-blue-600/20 to-indigo-900/60',
+  1
+);
+insertHero.run(
+  '/images/hero/slide-2.jpg',
+  'Kaishan & Chicago Pneumatic · Distributor',
+  'World-Class Air Compressor Solutions for Every Industry',
+  'Oil-Free · Rotary Screw · Reciprocating · Energy-Efficient Systems',
+  'from-sky-700/20 to-blue-950/60',
+  2
+);
+insertHero.run(
+  '/images/hero/slide-3.jpg',
+  'Tubacex & Trident · Authorized Representative',
+  '30+ Years of Technical Excellence in Surat, Gujarat',
+  'SS Tubes · Air Purification · Gas Generation · Clean Energy',
+  'from-indigo-700/20 to-slate-950/60',
+  3
+);
+insertHero.run(
+  '/images/hero/slide-4.jpg',
+  'Parker Clean Energy · CNG & Hydrogen',
+  "Powering India's Clean Energy Future",
+  'CNG Dispensers · Hydrogen Fueling Infrastructure · Zero-Emission',
+  'from-teal-700/20 to-blue-950/60',
+  4
+);
+
+// ─── SEED SOLUTIONS ──────────────────────────────────────────────────────────
+console.log('Seeding default solutions...');
+db.prepare('DELETE FROM solutions').run();
+
+const insertSolution = db.prepare(`
+  INSERT INTO solutions (icon, name, description, brands, href, image, accent, number, sort_order)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+`);
+
+insertSolution.run(
+  'Wind',
+  'Compressed Air Systems',
+  'Complete air generation, treatment & distribution from leading brands',
+  'Parker, Kaishan, Chicago Pneumatic, Trident',
+  '/products',
+  '/images/categories/compressed-air.jpg',
+  '#2563EB',
+  '01',
+  1
+);
+insertSolution.run(
+  'Settings2',
+  'Pneumatics & Automation',
+  'Cylinders, solenoid valves, fittings, tubing & FRL units for automation',
+  'Parker',
+  '/products/parker/pneumatics',
+  '/images/categories/pneumatics.jpg',
+  '#6366f1',
+  '02',
+  2
+);
+insertSolution.run(
+  'Gauge',
+  'Instrumentation',
+  'High-pressure fittings, needle valves, manifolds & process components',
+  'Parker',
+  '/products/parker/instrumentation',
+  '/images/categories/instrumentation.jpg',
+  '#8b5cf6',
+  '03',
+  3
+);
+insertSolution.run(
+  'Cable',
+  'Hydraulics',
+  'Hoses, fittings, adapters, filters & condition monitoring equipment',
+  'Parker',
+  '/products/parker/hydraulic-connectors',
+  '/images/categories/hydraulics.jpg',
+  '#0891b2',
+  '04',
+  4
+);
+insertSolution.run(
+  'Zap',
+  'Gas Generation',
+  'On-site nitrogen, hydrogen & zero-air generators for labs & industry',
+  'Parker',
+  '/products/parker/gas-generator',
+  '/images/categories/gas-generation.jpg',
+  '#d97706',
+  '05',
+  5
+);
+insertSolution.run(
+  'Leaf',
+  'Clean Energy — CNG & H₂',
+  'Fueling infrastructure for CNG and hydrogen stations across India',
+  'Parker',
+  '/products/parker/clean-energy',
+  '/images/categories/clean-energy.jpg',
+  '#16a34a',
+  '06',
+  6
+);
+
+// ─── SEED GALLERY PHOTOS ─────────────────────────────────────────────────────
+console.log('Seeding default gallery photos...');
+db.prepare('DELETE FROM gallery_photos').run();
+
+const insertGallery = db.prepare(`
+  INSERT INTO gallery_photos (url, title, sort_order)
+  VALUES (?, ?, ?)
+`);
+
+insertGallery.run('/images/gallery/team-1.jpg', 'Shah Group Team Meeting', 1);
+insertGallery.run('/images/gallery/team-2.jpg', 'Office Staff Workspace', 2);
+insertGallery.run('/images/gallery/team-3.jpg', 'Technical Team Discussion', 3);
+insertGallery.run('/images/gallery/team-4.jpg', 'Shah Group Directors', 4);
+insertGallery.run('/images/gallery/team-14.jpg', 'K. G. Shah — Founder', 5);
+insertGallery.run('/images/gallery/teams .png', 'Company Portrait', 6);
 
 console.log('\n✅ Database seeding complete!');

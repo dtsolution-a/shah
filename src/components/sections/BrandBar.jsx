@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useScrollAnimation, staggerContainer, staggerItem } from '../../hooks/useScrollAnimation';
+import { useBrands } from '../../hooks/useSiteData';
 
 const brandData = [
   {
@@ -58,6 +59,20 @@ const brandData = [
 
 export default function BrandBar() {
   const { ref, isInView } = useScrollAnimation();
+  const { data: dbBrands } = useBrands();
+
+  const activeBrands = dbBrands && dbBrands.length > 0
+    ? dbBrands.filter(b => b.is_active !== 0).map(b => ({
+        id: b.id,
+        name: b.name,
+        logo: b.logo,
+        description: b.tagline || b.description || '',
+        href: `/products/${b.id}`,
+        bg: 'bg-white dark:bg-gray-900',
+        border: 'border-gray-200 dark:border-gray-800 hover:border-accent dark:hover:border-accent',
+        isImg: true
+      }))
+    : brandData;
 
   return (
     <section className="section-padding-sm border-b border-[var(--color-border)] bg-gray-50 dark:bg-gray-900/40">
@@ -81,7 +96,7 @@ export default function BrandBar() {
             variants={staggerContainer}
             className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3"
           >
-            {brandData.map((brand) => (
+            {activeBrands.map((brand) => (
               <motion.div key={brand.id} variants={staggerItem}>
                 <Link
                   to={brand.href}
@@ -90,13 +105,13 @@ export default function BrandBar() {
                     transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5`}
                 >
                   {/* Logo image */}
-                  <div className="h-20 flex items-center justify-center w-full px-2">
+                  <div className="h-20 flex items-center justify-center w-full px-4 py-2 bg-white rounded-xl shadow-sm border border-gray-100">
                     <img
                       src={brand.logo}
                       alt={`${brand.name} logo`}
                       className={`max-w-full object-contain transition-all duration-300 opacity-100
                         ${brand.isSvg ? 'group-hover:opacity-100' : 'group-hover:opacity-100'}
-                        ${brand.id === 'tubacex' ? 'max-h-11 scale-95' : 'max-h-16 scale-110'}
+                        ${brand.id === 'tubacex' ? 'max-h-8' : brand.id === 'chicago-pneumatic' ? 'max-h-10' : 'max-h-14'}
                       `}
                       onError={(e) => {
                         // Fallback to text if image fails

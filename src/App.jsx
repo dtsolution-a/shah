@@ -26,6 +26,10 @@ import AdminBlog from './pages/admin/AdminBlog';
 import AdminContacts from './pages/admin/AdminContacts';
 import AdminTestimonials from './pages/admin/AdminTestimonials';
 import AdminJobs from './pages/admin/AdminJobs';
+import AdminHeroSlides from './pages/admin/AdminHeroSlides';
+import AdminSolutions from './pages/admin/AdminSolutions';
+import AdminGallery from './pages/admin/AdminGallery';
+import AdminApplications from './pages/admin/AdminApplications';
 import useThemeStore from './store/themeStore';
 
 // Page transition wrapper
@@ -150,13 +154,17 @@ export default function App() {
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
+            <Route path="hero-slides" element={<AdminHeroSlides />} />
             <Route path="brands" element={<AdminBrands />} />
             <Route path="categories" element={<AdminCategories />} />
             <Route path="products" element={<AdminProducts />} />
+            <Route path="solutions" element={<AdminSolutions />} />
+            <Route path="gallery" element={<AdminGallery />} />
             <Route path="blog" element={<AdminBlog />} />
             <Route path="contacts" element={<AdminContacts />} />
             <Route path="testimonials" element={<AdminTestimonials />} />
             <Route path="jobs" element={<AdminJobs />} />
+            <Route path="applications" element={<AdminApplications />} />
           </Route>
         </Routes>
       ) : (

@@ -1,12 +1,14 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Wind, Settings2, Gauge, Cable, Zap, Leaf } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import * as Icons from 'lucide-react';
 import { useScrollAnimation, staggerContainer, staggerItem, fadeUpVariants } from '../../hooks/useScrollAnimation';
+import { useSolutions } from '../../hooks/useSiteData';
 
 const solutionGroups = [
   {
     id: 'compressed-air',
-    icon: Wind,
+    icon: 'Wind',
     name: 'Compressed Air Systems',
     description: 'Complete air generation, treatment & distribution from leading brands',
     brands: ['Parker', 'Kaishan', 'Chicago Pneumatic', 'Trident'],
@@ -17,7 +19,7 @@ const solutionGroups = [
   },
   {
     id: 'pneumatics',
-    icon: Settings2,
+    icon: 'Settings2',
     name: 'Pneumatics & Automation',
     description: 'Cylinders, solenoid valves, fittings, tubing & FRL units for automation',
     brands: ['Parker'],
@@ -28,7 +30,7 @@ const solutionGroups = [
   },
   {
     id: 'instrumentation',
-    icon: Gauge,
+    icon: 'Gauge',
     name: 'Instrumentation',
     description: 'High-pressure fittings, needle valves, manifolds & process components',
     brands: ['Parker'],
@@ -39,7 +41,7 @@ const solutionGroups = [
   },
   {
     id: 'hydraulics',
-    icon: Cable,
+    icon: 'Cable',
     name: 'Hydraulics',
     description: 'Hoses, fittings, adapters, filters & condition monitoring equipment',
     brands: ['Parker'],
@@ -50,7 +52,7 @@ const solutionGroups = [
   },
   {
     id: 'gas-gen',
-    icon: Zap,
+    icon: 'Zap',
     name: 'Gas Generation',
     description: 'On-site nitrogen, hydrogen & zero-air generators for labs & industry',
     brands: ['Parker'],
@@ -61,7 +63,7 @@ const solutionGroups = [
   },
   {
     id: 'clean-energy',
-    icon: Leaf,
+    icon: 'Leaf',
     name: 'Clean Energy — CNG & H₂',
     description: 'Fueling infrastructure for CNG and hydrogen stations across India',
     brands: ['Parker'],
@@ -74,6 +76,21 @@ const solutionGroups = [
 
 export default function ProductCategories() {
   const { ref, isInView } = useScrollAnimation();
+  const { data: dbSolutions } = useSolutions();
+
+  const activeSolutions = dbSolutions && dbSolutions.length > 0
+    ? dbSolutions.map(s => ({
+        id: s.id,
+        icon: s.icon || 'Package',
+        name: s.name,
+        description: s.description,
+        brands: s.brands ? s.brands.split(',').map(b => b.trim()) : [],
+        href: s.href || '/products',
+        image: s.image,
+        accent: s.accent || '#2563EB',
+        number: s.number || ''
+      }))
+    : solutionGroups;
 
   return (
     <section className="section-padding bg-white dark:bg-gray-950">
@@ -103,10 +120,10 @@ export default function ProductCategories() {
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
           variants={staggerContainer}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {solutionGroups.map((group) => {
-            const Icon = group.icon;
+          {activeSolutions.map((group) => {
+            const Icon = Icons[group.icon] || Icons.Package;
             return (
               <motion.div key={group.id} variants={staggerItem} className="h-full">
                 <Link

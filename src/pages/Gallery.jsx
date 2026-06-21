@@ -1,96 +1,37 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ZoomIn } from 'lucide-react';
-import { useScrollAnimation, fadeUpVariants, staggerContainer, staggerItem } from '../hooks/useScrollAnimation';
-
-// Real photo paths from Shah folder
-const galleryData = {
-  all: [],
-  office: [
-    { id: 'o1', src: '/images/gallery/office/office-1.jpg', alt: 'Shah Group Office' },
-    { id: 'o2', src: '/images/gallery/office/office-2.jpg', alt: 'Office workspace' },
-    { id: 'o3', src: '/images/gallery/office/office-3.jpg', alt: 'Reception area' },
-    { id: 'o4', src: '/images/gallery/office/office-4.jpg', alt: 'Conference room' },
-    { id: 'o5', src: '/images/gallery/office/office-5.jpg', alt: 'Office interior' },
-    { id: 'o6', src: '/images/gallery/office/office-6.jpg', alt: 'Office view' },
-  ],
-  machinery: [
-    { id: 'm1',  src: '/images/gallery/machinery/machinery-1.jpg',  alt: 'Industrial machinery' },
-    { id: 'm2',  src: '/images/gallery/machinery/machinery-2.jpg',  alt: 'Equipment display' },
-    { id: 'm3',  src: '/images/gallery/machinery/machinery-3.jpg',  alt: 'Compressor systems' },
-    { id: 'm4',  src: '/images/gallery/machinery/machinery-4.jpg',  alt: 'Hydraulic systems' },
-    { id: 'm5',  src: '/images/gallery/machinery/machinery-5.jpg',  alt: 'Pneumatic components' },
-    { id: 'm6',  src: '/images/gallery/machinery/machinery-6.jpg',  alt: 'Industrial equipment' },
-    { id: 'm7',  src: '/images/gallery/machinery/machinery-7.jpg',  alt: 'Machine setup' },
-    { id: 'm8',  src: '/images/gallery/machinery/machinery-8.jpg',  alt: 'Technical equipment' },
-    { id: 'm9',  src: '/images/gallery/machinery/machinery-9.jpg',  alt: 'Compressor unit' },
-    { id: 'm10', src: '/images/gallery/machinery/machinery-10.jpg', alt: 'Air system' },
-    { id: 'm11', src: '/images/gallery/machinery/machinery-11.jpg', alt: 'Equipment panel' },
-    { id: 'm12', src: '/images/gallery/machinery/machinery-12.jpg', alt: 'Industrial setup' },
-    { id: 'm13', src: '/images/gallery/machinery/machinery-13.jpg', alt: 'Machinery floor' },
-    { id: 'm14', src: '/images/gallery/machinery/machinery-14.jpg', alt: 'Technical display' },
-    { id: 'm15', src: '/images/gallery/machinery/machinery-15.jpg', alt: 'Engineering equipment' },
-  ],
-  store: [
-    { id: 's1', src: '/images/gallery/store/store-1.jpg', alt: 'Product store' },
-    { id: 's2', src: '/images/gallery/store/store-2.jpg', alt: 'Spare parts inventory' },
-    { id: 's3', src: '/images/gallery/store/store-3.jpg', alt: 'Stock warehouse' },
-    { id: 's4', src: '/images/gallery/store/store-4.jpg', alt: 'Product display' },
-    { id: 's5', src: '/images/gallery/store/store-5.jpg', alt: 'Parts shelving' },
-  ],
-  workshop: [
-    { id: 'w1', src: '/images/gallery/workshop/workshop-1.jpg', alt: 'Workshop floor' },
-    { id: 'w2', src: '/images/gallery/workshop/workshop-2.jpg', alt: 'Technical workshop' },
-    { id: 'w3', src: '/images/gallery/workshop/workshop-3.jpg', alt: 'Service workshop' },
-    { id: 'w4', src: '/images/gallery/workshop/workshop-4.jpg', alt: 'Maintenance area' },
-  ],
-  team: [
-    { id: 't1',  src: '/images/gallery/team/team-1.jpg',  alt: 'Shah Group team' },
-    { id: 't2',  src: '/images/gallery/team/team-2.jpg',  alt: 'Office staff' },
-    { id: 't3',  src: '/images/gallery/team/team-3.jpg',  alt: 'Technical team' },
-    { id: 't4',  src: '/images/gallery/team/team-4.jpg',  alt: 'Team meeting' },
-    { id: 't5',  src: '/images/gallery/team/team-5.jpg',  alt: 'Kaushik Shah — Founder' },
-    { id: 't6',  src: '/images/gallery/team/team-6.jpg',  alt: 'Leadership' },
-    { id: 't7',  src: '/images/gallery/team/team-7.jpg',  alt: 'Director' },
-    { id: 't8',  src: '/images/gallery/team/team-8.jpg',  alt: 'Management' },
-    { id: 't9',  src: '/images/gallery/team/team-9.jpg',  alt: 'Company leadership' },
-    { id: 't10', src: '/images/gallery/team/team-10.jpg', alt: 'Team portrait' },
-    { id: 't11', src: '/images/gallery/team/team-11.jpg', alt: 'Office team' },
-    { id: 't12', src: '/images/gallery/team/team-12.jpg', alt: 'Staff' },
-    { id: 't13', src: '/images/gallery/team/team-13.jpg', alt: 'Team members' },
-    { id: 't14', src: '/images/gallery/team/team-14.jpg', alt: 'Company team' },
-  ],
-};
-
-const tabs = [
-  { key: 'all', label: 'All Photos' },
-  { key: 'office', label: 'Office' },
-  { key: 'machinery', label: 'Machinery' },
-  { key: 'store', label: 'Store' },
-  { key: 'workshop', label: 'Workshop' },
-  { key: 'team', label: 'Team' },
-];
+import { X } from 'lucide-react';
+import { useGalleryPhotos } from '../hooks/useSiteData';
+import './Gallery.css';
 
 export default function Gallery() {
-  const { ref, isInView } = useScrollAnimation();
-  const [activeTab, setActiveTab] = useState('all');
+  const { photos: dbPhotos, loading } = useGalleryPhotos();
   const [lightbox, setLightbox] = useState(null);
 
-  const getItems = () => {
-    if (activeTab === 'all') {
-      return Object.entries(galleryData)
-        .filter(([k]) => k !== 'all')
-        .flatMap(([, items]) => items);
+  const items = (dbPhotos || []).map(p => ({
+    id: p.id,
+    src: p.url,
+    alt: p.title || 'Shah Group'
+  }));
+
+  // Distribute items into two rows for the double marquee
+  const getRowItems = (arr) => {
+    let result = [...arr];
+    if (result.length === 0) return [];
+    // Ensure we have at least 8 items per row to fill screen and scroll nicely
+    while (result.length < 8) {
+      result = [...result, ...arr.map(item => ({ ...item, id: `${item.id}-${Math.random()}` }))];
     }
-    return galleryData[activeTab] || [];
+    return result;
   };
 
-  const items = getItems();
+  const row1Photos = getRowItems(items.filter((_, idx) => idx % 2 === 0));
+  const row2Photos = getRowItems(items.filter((_, idx) => idx % 2 !== 0));
 
   return (
-    <div>
+    <div className="bg-white dark:bg-gray-950 min-h-screen">
       {/* Hero */}
-      <section className="section-padding-sm bg-white dark:bg-gray-950 border-b border-[var(--color-border)]">
+      <section className="section-padding-sm bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-900">
         <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -102,72 +43,93 @@ export default function Gallery() {
               Inside Shah Group
             </h1>
             <p className="text-lg text-gray-500 dark:text-gray-400 max-w-xl">
-              A look at our state-of-the-art office, workshop, product store, machinery and team.
+              A view of our state-of-the-art office, workshop, product store, machinery, and team.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Gallery */}
-      <section className="section-padding">
-        <div className="container-wide">
-          {/* Tabs */}
-          <div className="flex gap-2 flex-wrap mb-10">
-            {tabs.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  activeTab === tab.key
-                    ? 'bg-accent text-white shadow-glow'
-                    : 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:border-accent/40'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+      {/* Gallery Infinite Slider */}
+      <section className="py-12 overflow-hidden">
+        {loading && items.length === 0 ? (
+          <div className="flex justify-center items-center py-24">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
           </div>
-
-          {/* Grid */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
-            >
-              {items.map((item, idx) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: idx * 0.03 }}
-                  className={`relative group overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800 cursor-pointer
-                    ${idx % 7 === 0 ? 'col-span-2 row-span-2' : ''}
-                  `}
-                  style={{ minHeight: '200px' }}
-                  onClick={() => setLightbox(item)}
-                >
-                  <img
-                    src={item.src}
-                    alt={item.alt}
-                    loading="lazy"
-                    className="w-full h-full object-cover min-h-[200px] group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.parentElement.classList.add('image-shimmer');
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
-                    <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        ) : items.length === 0 ? (
+          <div className="text-center py-24 text-gray-500">No photos available.</div>
+        ) : (
+          <div className="flex flex-col gap-6">
+            {/* Row 1: Left Scrolling */}
+            {row1Photos.length > 0 && (
+              <div className="gallery-marquee-container">
+                <div className="gallery-marquee">
+                  <div className="gallery-marquee-content">
+                    {row1Photos.map((photo, index) => (
+                      <div
+                        key={`r1-${photo.id}-${index}`}
+                        className="gallery-marquee-item"
+                        onClick={() => setLightbox(photo)}
+                      >
+                        <img src={photo.src} alt={photo.alt} loading="lazy" />
+                        <div className="gallery-photo-overlay">
+                          <span className="gallery-photo-title">{photo.alt}</span>
+                        </div>
+                      </div>
+                    ))}
+                    {/* Duplicate set for seamless looping */}
+                    {row1Photos.map((photo, index) => (
+                      <div
+                        key={`r1-dup-${photo.id}-${index}`}
+                        className="gallery-marquee-item"
+                        onClick={() => setLightbox(photo)}
+                      >
+                        <img src={photo.src} alt={photo.alt} loading="lazy" />
+                        <div className="gallery-photo-overlay">
+                          <span className="gallery-photo-title">{photo.alt}</span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+                </div>
+              </div>
+            )}
+
+            {/* Row 2: Right Scrolling */}
+            {row2Photos.length > 0 && (
+              <div className="gallery-marquee-container gallery-marquee-reverse">
+                <div className="gallery-marquee">
+                  <div className="gallery-marquee-content">
+                    {row2Photos.map((photo, index) => (
+                      <div
+                        key={`r2-${photo.id}-${index}`}
+                        className="gallery-marquee-item"
+                        onClick={() => setLightbox(photo)}
+                      >
+                        <img src={photo.src} alt={photo.alt} loading="lazy" />
+                        <div className="gallery-photo-overlay">
+                          <span className="gallery-photo-title">{photo.alt}</span>
+                        </div>
+                      </div>
+                    ))}
+                    {/* Duplicate set for seamless looping */}
+                    {row2Photos.map((photo, index) => (
+                      <div
+                        key={`r2-dup-${photo.id}-${index}`}
+                        className="gallery-marquee-item"
+                        onClick={() => setLightbox(photo)}
+                      >
+                        <img src={photo.src} alt={photo.alt} loading="lazy" />
+                        <div className="gallery-photo-overlay">
+                          <span className="gallery-photo-title">{photo.alt}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </section>
 
       {/* Lightbox */}

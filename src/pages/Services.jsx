@@ -187,12 +187,12 @@ export default function Services() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="rounded-2xl overflow-hidden shadow-lg"
+              className="rounded-2xl overflow-hidden shadow-lg max-h-[380px] max-w-[480px] mx-auto w-full"
             >
               <img
                 src="/images/service/cng.jpeg"
                 alt="CNG Dispenser Services"
-                className="w-full h-full object-cover"
+                className="w-full h-[380px] object-cover"
               />
             </motion.div>
           </div>
@@ -209,12 +209,12 @@ export default function Services() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="rounded-2xl overflow-hidden shadow-lg order-2 lg:order-1"
+              className="rounded-2xl overflow-hidden shadow-lg order-2 lg:order-1 max-h-[380px] max-w-[480px] mx-auto w-full"
             >
               <img
                 src="/images/service/compressor.jpeg"
                 alt="Compressor Services"
-                className="w-full h-full object-cover"
+                className="w-full h-[380px] object-cover"
               />
             </motion.div>
             {/* Text */}
