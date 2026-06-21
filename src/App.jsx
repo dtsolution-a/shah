@@ -143,7 +143,7 @@ export default function App() {
     initTheme();
   }, []);
 
-  const isAdminRoute = location.pathname.startsWith('/admin');
+  const isAdminRoute = location.pathname.startsWith('/ad-admin');
 
   return (
     <HelmetProvider>
@@ -151,8 +151,8 @@ export default function App() {
       {isAdminRoute ? (
         // Admin Panel (no Navbar/Footer)
         <Routes>
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={<AdminLayout />}>
+          <Route path="/ad-admin/login" element={<AdminLogin />} />
+          <Route path="/ad-admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="hero-slides" element={<AdminHeroSlides />} />
             <Route path="brands" element={<AdminBrands />} />

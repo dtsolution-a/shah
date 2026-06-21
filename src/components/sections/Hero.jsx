@@ -39,13 +39,6 @@ const slides = [
   },
 ];
 
-const stats = [
-  { value: '30+', label: 'Years' },
-  { value: '5', label: 'Global Brands' },
-  { value: '500+', label: 'Products' },
-  { value: '1000+', label: 'Clients' },
-];
-
 const badges = [
   { icon: Award, text: 'Authorized Parker Distributor' },
   { icon: Shield, text: 'Genuine · OEM Certified' },
@@ -215,9 +208,9 @@ export default function Hero() {
 
       {/* ─────── Bottom controls bar ─────── */}
       <div className="relative z-10 w-full border-t border-white/8 bg-black/25 backdrop-blur-md">
-        <div className="container-wide py-5 flex items-center justify-between gap-6">
+        <div className="container-wide py-5 flex items-center justify-center gap-6">
 
-          {/* Left — slider controls */}
+          {/* Slider controls */}
           <div className="flex items-center gap-3">
             <button
               onClick={prev}
@@ -268,18 +261,6 @@ export default function Hero() {
             <span className="text-[11px] font-mono text-white/35 ml-1 tabular-nums">
               {String(current + 1).padStart(2, '0')} / {String(activeSlides.length).padStart(2, '0')}
             </span>
-          </div>
-
-          {/* Right — stats */}
-          <div className="flex items-center gap-6 md:gap-10">
-            {stats.map(({ value, label }, i) => (
-              <div key={label} className="flex flex-col items-end text-right">
-                <span className="text-xl md:text-2xl font-black text-white font-mono leading-none tabular-nums">
-                  {value}
-                </span>
-                <span className="text-[10px] text-white/45 mt-0.5 whitespace-nowrap">{label}</span>
-              </div>
-            ))}
           </div>
         </div>
       </div>

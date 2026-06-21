@@ -49,17 +49,17 @@ export default function AdminDashboard() {
   };
 
   const cards = [
-    { label: 'Hero Slides', value: stats.heroSlides, icon: Sliders, color: 'bg-indigo-500', href: '/admin/hero-slides' },
-    { label: 'Brands', value: stats.brands, icon: Package, color: 'bg-blue-500', href: '/admin/brands' },
-    { label: 'Categories', value: stats.categories, icon: Tag, color: 'bg-purple-500', href: '/admin/categories' },
-    { label: 'Products', value: stats.products, icon: ShoppingBag, color: 'bg-green-500', href: '/admin/products' },
-    { label: 'Solutions', value: stats.solutions, icon: Layers, color: 'bg-pink-500', href: '/admin/solutions' },
-    { label: 'Gallery Photos', value: stats.galleryPhotos, icon: Image, color: 'bg-cyan-500', href: '/admin/gallery' },
-    { label: 'Blog Posts', value: stats.blogPosts, icon: FileText, color: 'bg-orange-500', href: '/admin/blog' },
-    { label: 'Unread Enquiries', value: stats.unreadContacts, icon: MessageSquare, color: 'bg-red-500', href: '/admin/contacts' },
-    { label: 'Testimonials', value: stats.testimonials, icon: Star, color: 'bg-yellow-500', href: '/admin/testimonials' },
-    { label: 'Jobs', value: stats.jobs, icon: Briefcase, color: 'bg-teal-500', href: '/admin/jobs' },
-    { label: 'Unread Applications', value: stats.unreadApplications, icon: UserCheck, color: 'bg-emerald-500', href: '/admin/applications' },
+    { label: 'Hero Slides', value: stats.heroSlides, icon: Sliders, color: 'bg-indigo-500', href: '/ad-admin/hero-slides' },
+    { label: 'Brands', value: stats.brands, icon: Package, color: 'bg-blue-500', href: '/ad-admin/brands' },
+    { label: 'Categories', value: stats.categories, icon: Tag, color: 'bg-purple-500', href: '/ad-admin/categories' },
+    { label: 'Products', value: stats.products, icon: ShoppingBag, color: 'bg-green-500', href: '/ad-admin/products' },
+    { label: 'Solutions', value: stats.solutions, icon: Layers, color: 'bg-pink-500', href: '/ad-admin/solutions' },
+    { label: 'Gallery Photos', value: stats.galleryPhotos, icon: Image, color: 'bg-cyan-500', href: '/ad-admin/gallery' },
+    { label: 'Blog Posts', value: stats.blogPosts, icon: FileText, color: 'bg-orange-500', href: '/ad-admin/blog' },
+    { label: 'Unread Enquiries', value: stats.unreadContacts, icon: MessageSquare, color: 'bg-red-500', href: '/ad-admin/contacts' },
+    { label: 'Testimonials', value: stats.testimonials, icon: Star, color: 'bg-yellow-500', href: '/ad-admin/testimonials' },
+    { label: 'Jobs', value: stats.jobs, icon: Briefcase, color: 'bg-teal-500', href: '/ad-admin/jobs' },
+    { label: 'Unread Applications', value: stats.unreadApplications, icon: UserCheck, color: 'bg-emerald-500', href: '/ad-admin/applications' },
   ];
 
   if (loading) {
@@ -98,47 +98,47 @@ export default function AdminDashboard() {
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          <a href="/admin/hero-slides" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+          <a href="/ad-admin/hero-slides" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <Sliders className="w-5 h-5 text-indigo-500" />
             <span className="text-sm font-medium text-gray-700">Manage Hero Slides</span>
           </a>
-          <a href="/admin/brands" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+          <a href="/ad-admin/brands" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <Package className="w-5 h-5 text-blue-500" />
             <span className="text-sm font-medium text-gray-700">Add New Brand</span>
           </a>
-          <a href="/admin/categories" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+          <a href="/ad-admin/categories" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <Tag className="w-5 h-5 text-purple-500" />
             <span className="text-sm font-medium text-gray-700">Add New Category</span>
           </a>
-          <a href="/admin/products" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+          <a href="/ad-admin/products" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <ShoppingBag className="w-5 h-5 text-green-500" />
             <span className="text-sm font-medium text-gray-700">Add New Product</span>
           </a>
-          <a href="/admin/solutions" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+          <a href="/ad-admin/solutions" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <Layers className="w-5 h-5 text-pink-500" />
             <span className="text-sm font-medium text-gray-700">Manage Solutions</span>
           </a>
-          <a href="/admin/gallery" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+          <a href="/ad-admin/gallery" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <Image className="w-5 h-5 text-cyan-500" />
             <span className="text-sm font-medium text-gray-700">Manage Gallery</span>
           </a>
-          <a href="/admin/blog" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+          <a href="/ad-admin/blog" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <FileText className="w-5 h-5 text-orange-500" />
             <span className="text-sm font-medium text-gray-700">Write Blog Post</span>
           </a>
-          <a href="/admin/contacts" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+          <a href="/ad-admin/contacts" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <MessageSquare className="w-5 h-5 text-red-500" />
             <span className="text-sm font-medium text-gray-700">View Enquiries</span>
           </a>
-          <a href="/admin/testimonials" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+          <a href="/ad-admin/testimonials" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <Star className="w-5 h-5 text-yellow-500" />
             <span className="text-sm font-medium text-gray-700">Manage Testimonials</span>
           </a>
-          <a href="/admin/jobs" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+          <a href="/ad-admin/jobs" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <Briefcase className="w-5 h-5 text-teal-500" />
             <span className="text-sm font-medium text-gray-700">Manage Jobs</span>
           </a>
-          <a href="/admin/applications" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+          <a href="/ad-admin/applications" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <UserCheck className="w-5 h-5 text-emerald-500" />
             <span className="text-sm font-medium text-gray-700">View Applications</span>
           </a>
@@ -159,12 +159,13 @@ export default function AdminDashboard() {
                 <p className="text-sm font-medium text-amber-800">
                   You have {stats.unreadContacts} unread enquiry{stats.unreadContacts > 1 ? 'ies' : 'y'}
                 </p>
-                <a href="/admin/contacts" className="text-sm text-amber-600 hover:underline mt-1 inline-block">
+                <a href="/ad-admin/contacts" className="text-sm text-amber-600 hover:underline mt-1 inline-block">
                   View enquiries →
                 </a>
               </div>
             </div>
           )}
+          {stats.unreadContacts > 0 && stats.unreadApplications > 0 && <div className="hidden" />}
           {stats.unreadApplications > 0 && (
             <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" />
@@ -172,7 +173,7 @@ export default function AdminDashboard() {
                 <p className="text-sm font-medium text-emerald-800">
                   You have {stats.unreadApplications} unread job application{stats.unreadApplications > 1 ? 's' : ''}
                 </p>
-                <a href="/admin/applications" className="text-sm text-emerald-600 hover:underline mt-1 inline-block">
+                <a href="/ad-admin/applications" className="text-sm text-emerald-600 hover:underline mt-1 inline-block">
                   View applications →
                 </a>
               </div>

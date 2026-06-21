@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Search, ArrowRight, Filter, Wind, Settings2, Gauge, Cable, Layers, Zap, Leaf, Star, Settings, Loader2 } from 'lucide-react';
 import { useBrands, useCategories } from '../hooks/useSiteData';
 import { useScrollAnimation, fadeUpVariants, staggerContainer, staggerItem } from '../hooks/useScrollAnimation';
@@ -8,11 +8,34 @@ import { useScrollAnimation, fadeUpVariants, staggerContainer, staggerItem } fro
 const iconMap = { Wind, Settings2, Gauge, Cable, Layers, Zap, Leaf, Star, Settings, Filter };
 
 export default function Products() {
+  const { brandId } = useParams();
   const [activeBrand, setActiveBrand] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const { ref, isInView } = useScrollAnimation();
   const { brands } = useBrands();
   const { categories } = useCategories();
+
+  useEffect(() => {
+    if (brandId) {
+      setActiveBrand(brandId);
+    } else {
+      setActiveBrand('all');
+    }
+  }, [brandId]);
+
+  useEffect(() => {
+    if (activeBrand === 'parker') {
+      const container = document.getElementById('parker-showcase-container');
+      if (container) {
+        container.innerHTML = '';
+        const script = document.createElement('script');
+        script.async = true;
+        script.type = 'text/javascript';
+        script.src = 'https://636619737430284501.publisher.impartner.io/csp/?mfrname=parker';
+        container.appendChild(script);
+      }
+    }
+  }, [activeBrand]);
 
   const filteredCategories = categories.filter((cat) => {
     const matchesBrand = activeBrand === 'all' || cat.brandId === activeBrand;
@@ -95,6 +118,18 @@ export default function Products() {
       {/* Results */}
       <section className="section-padding">
         <div className="container-wide">
+          {activeBrand === 'parker' && (
+            <div className="mb-12 p-6 bg-gray-50 dark:bg-gray-900/50 border border-gray-150 dark:border-gray-800 rounded-2xl">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse" />
+                <h2 className="text-base font-bold text-gray-900 dark:text-white">
+                  Parker Content Syndication Interactive Showcase
+                </h2>
+              </div>
+              <div id="parker-showcase-container" className="w-full min-h-[600px] overflow-hidden rounded-xl bg-white p-2 shadow-sm border border-gray-100" />
+            </div>
+          )}
+
           <div className="flex items-center justify-between mb-8">
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Showing <span className="font-semibold text-gray-900 dark:text-white">{filteredCategories.length}</span> product categories

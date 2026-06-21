@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail } from 'lucide-react';
+import { useBrands } from '../../hooks/useSiteData';
 
 const footerLinks = {
   company: [
@@ -52,6 +53,15 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+  const { brands } = useBrands();
+
+  const activeBrands = brands && brands.length > 0
+    ? brands.filter(b => b.is_active !== 0).map(b => ({
+        label: b.name,
+        href: `/products/${b.id}`
+      }))
+    : footerLinks.brands;
+
   return (
     <footer className="bg-gray-950 text-gray-400">
       {/* Main footer */}
@@ -126,7 +136,7 @@ export default function Footer() {
           <div>
             <h4 className="text-white text-sm font-semibold mb-5 tracking-tight">Our Brands</h4>
             <ul className="space-y-3">
-              {footerLinks.brands.map((link) => (
+              {activeBrands.map((link) => (
                 <li key={link.label}>
                   <Link to={link.href} className="text-sm text-gray-500 hover:text-white transition-colors duration-200">
                     {link.label}

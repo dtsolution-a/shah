@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Plus, Edit2, Trash2, Search, X, Check, Eye, EyeOff } from 'lucide-react';
+import { Plus, Edit2, Trash2, Search, X, Check, Eye, EyeOff, Upload } from 'lucide-react';
 import api from './AdminAPI';
 import { refreshSiteData } from '../../hooks/useSiteData';
 
@@ -11,6 +11,21 @@ export default function AdminBrands() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ id: '', name: '', shortName: '', tagline: '', color: '#3B82F6', description: '', logo: '', sort_order: 0 });
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const res = await api.uploadFile(file, 'brands');
+      setForm(prev => ({ ...prev, logo: res.url }));
+    } catch (err) {
+      alert(err.message || 'Image upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   useEffect(() => { loadBrands(); }, []);
 
@@ -201,9 +216,20 @@ export default function AdminBrands() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-accent outline-none" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Logo URL</label>
-                <input type="text" value={form.logo} onChange={e => setForm({...form, logo: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-accent outline-none" placeholder="/images/brands/parker.svg" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Logo Image</label>
+                <div className="flex gap-2">
+                  <input type="text" value={form.logo} onChange={e => setForm({...form, logo: e.target.value})}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-accent outline-none" placeholder="/images/brands/parker.jpg" />
+                  <div className="relative">
+                    <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" id="brand-upload-input" />
+                    <label htmlFor="brand-upload-input" className="flex items-center gap-1.5 px-3 py-2 bg-gray-100 hover:bg-gray-250 border border-gray-300 text-gray-700 rounded-lg text-sm cursor-pointer transition-colors">
+                      <Upload className="w-4 h-4" /> {uploading ? '...' : 'Upload'}
+                    </label>
+                  </div>
+                </div>
+                {form.logo && (
+                  <img src={form.logo} alt="Preview" className="mt-2 h-12 w-auto object-contain rounded border bg-white p-1" />
+                )}
               </div>
               <div className="flex justify-end gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">Cancel</button>

@@ -14,7 +14,7 @@ export default function AdminLogin() {
   // If already logged in, redirect
   useState(() => {
     if (api.isAuthenticated()) {
-      navigate('/admin');
+      navigate('/ad-admin');
     }
   });
 
@@ -26,7 +26,7 @@ export default function AdminLogin() {
     try {
       const data = await api.login(username, password);
       api.setToken(data.token);
-      navigate('/admin');
+      navigate('/ad-admin');
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
@@ -104,12 +104,6 @@ export default function AdminLogin() {
               )}
             </button>
           </form>
-
-          <div className="mt-6 pt-4 border-t border-gray-100">
-            <p className="text-xs text-gray-400 text-center">
-              Default credentials: <span className="font-mono text-gray-600">admin</span> / <span className="font-mono text-gray-600">admin@123</span>
-            </p>
-          </div>
         </div>
 
         <p className="text-center mt-6">

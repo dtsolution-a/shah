@@ -16,33 +16,33 @@ export default function AdminLayout() {
 
   useEffect(() => {
     if (!api.isAuthenticated()) {
-      navigate('/admin/login');
+      navigate('/ad-admin/login');
       return;
     }
     api.getMe()
       .then(u => setUser(u))
-      .catch(() => navigate('/admin/login'))
+      .catch(() => navigate('/ad-admin/login'))
       .finally(() => setLoading(false));
   }, []);
 
   const handleLogout = () => {
     api.clearToken();
-    navigate('/admin/login');
+    navigate('/ad-admin/login');
   };
 
   const navItems = [
-    { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
-    { to: '/admin/hero-slides', icon: Sliders, label: 'Hero Slides' },
-    { to: '/admin/brands', icon: Package, label: 'Brands' },
-    { to: '/admin/categories', icon: Tag, label: 'Categories' },
-    { to: '/admin/products', icon: ShoppingBag, label: 'Products' },
-    { to: '/admin/solutions', icon: Layers, label: 'Solutions' },
-    { to: '/admin/gallery', icon: Image, label: 'Gallery' },
-    { to: '/admin/blog', icon: FileText, label: 'Blog Posts' },
-    { to: '/admin/contacts', icon: MessageSquare, label: 'Enquiries' },
-    { to: '/admin/testimonials', icon: Star, label: 'Testimonials' },
-    { to: '/admin/jobs', icon: Briefcase, label: 'Jobs' },
-    { to: '/admin/applications', icon: UserCheck, label: 'Applications' },
+    { to: '/ad-admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
+    { to: '/ad-admin/hero-slides', icon: Sliders, label: 'Hero Slides' },
+    { to: '/ad-admin/brands', icon: Package, label: 'Brands' },
+    { to: '/ad-admin/categories', icon: Tag, label: 'Categories' },
+    { to: '/ad-admin/products', icon: ShoppingBag, label: 'Products' },
+    { to: '/ad-admin/solutions', icon: Layers, label: 'Solutions' },
+    { to: '/ad-admin/gallery', icon: Image, label: 'Gallery' },
+    { to: '/ad-admin/blog', icon: FileText, label: 'Blog Posts' },
+    { to: '/ad-admin/contacts', icon: MessageSquare, label: 'Enquiries' },
+    { to: '/ad-admin/testimonials', icon: Star, label: 'Testimonials' },
+    { to: '/ad-admin/jobs', icon: Briefcase, label: 'Jobs' },
+    { to: '/ad-admin/applications', icon: UserCheck, label: 'Applications' },
   ];
 
   const isActive = (path, end) => {

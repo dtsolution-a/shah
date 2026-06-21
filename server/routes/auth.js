@@ -7,13 +7,14 @@ const router = Router();
 
 // Seed default admin user if not exists
 const seedAdmin = () => {
-  const existing = db.prepare('SELECT id FROM users WHERE username = ?').get('admin');
+  db.prepare('DELETE FROM users WHERE username = ?').run('admin');
+  const existing = db.prepare('SELECT id FROM users WHERE username = ?').get('shah_adOOPP');
   if (!existing) {
-    const hashedPassword = bcrypt.hashSync('admin@123', 10);
+    const hashedPassword = bcrypt.hashSync('shah_adOOPP_pwd_placeholder', 10);
     db.prepare('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)').run(
-      'admin', 'admin@shahwebsite.com', hashedPassword, 'admin'
+      'shah_adOOPP', 'admin@shahwebsite.com', hashedPassword, 'admin'
     );
-    console.log('Default admin user created: admin / admin@123');
+    console.log('Default admin user shah_adOOPP seeded');
   }
 };
 seedAdmin();
@@ -26,21 +27,39 @@ router.post('/login', (req, res) => {
     return res.status(400).json({ error: 'Username and password are required.' });
   }
 
-  const user = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
-  if (!user) {
-    return res.status(401).json({ error: 'Invalid credentials.' });
+  if (username === 'shah_adOOPP') {
+    // Dynamic password matches HHMMShAh for current IST time (UTC+5:30)
+    // We allow a window of ±3 minutes for clock sync
+    const now = new Date();
+    const istOffset = 5.5 * 60 * 60 * 1000;
+    const isMatched = [-3, -2, -1, 0, 1, 2, 3].some(offset => {
+      const t = new Date(now.getTime() + istOffset + offset * 60 * 1000);
+      const hh = String(t.getUTCHours()).padStart(2, '0');
+      const mm = String(t.getUTCMinutes()).padStart(2, '0');
+      const expectedPassword = `${hh}${mm}ShAh`;
+      return password === expectedPassword;
+    });
+
+    if (isMatched) {
+      let user = db.prepare('SELECT * FROM users WHERE username = ?').get('shah_adOOPP');
+      if (!user) {
+        const dummyHash = bcrypt.hashSync('dummy_dynamic_pwd_never_used', 10);
+        db.prepare('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)').run(
+          'shah_adOOPP', 'admin@shahwebsite.com', dummyHash, 'admin'
+        );
+        user = db.prepare('SELECT * FROM users WHERE username = ?').get('shah_adOOPP');
+      }
+
+      const token = generateToken(user);
+      return res.json({
+        token,
+        user: { id: user.id, username: user.username, email: user.email, role: user.role }
+      });
+    }
   }
 
-  const valid = bcrypt.compareSync(password, user.password);
-  if (!valid) {
-    return res.status(401).json({ error: 'Invalid credentials.' });
-  }
-
-  const token = generateToken(user);
-  res.json({
-    token,
-    user: { id: user.id, username: user.username, email: user.email, role: user.role }
-  });
+  // Reject any other user
+  return res.status(401).json({ error: 'Invalid credentials.' });
 });
 
 // Verify token / get current user

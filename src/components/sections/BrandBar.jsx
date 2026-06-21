@@ -11,8 +11,8 @@ const brandData = [
     isImg: true,
     description: 'Fortune 250 · Motion & Control',
     href: '/products/parker',
-    bg: 'bg-white dark:bg-gray-900',
-    border: 'border-gray-200 dark:border-gray-800 hover:border-yellow-300 dark:hover:border-yellow-700',
+    bg: 'bg-white',
+    border: 'border-gray-200 hover:border-yellow-300',
   },
   {
     id: 'kaishan',
@@ -21,8 +21,8 @@ const brandData = [
     isImg: true,
     description: 'World-Class Air Compressors',
     href: '/products/kaishan',
-    bg: 'bg-white dark:bg-gray-900',
-    border: 'border-gray-200 dark:border-gray-800 hover:border-red-300 dark:hover:border-red-800',
+    bg: 'bg-white',
+    border: 'border-gray-200 hover:border-red-300',
   },
   {
     id: 'chicago-pneumatic',
@@ -32,8 +32,8 @@ const brandData = [
     isSvg: true,
     description: '100+ Years of Reliability',
     href: '/products/chicago-pneumatic',
-    bg: 'bg-white dark:bg-gray-900',
-    border: 'border-gray-200 dark:border-gray-800 hover:border-orange-300 dark:hover:border-orange-800',
+    bg: 'bg-white',
+    border: 'border-gray-200 hover:border-orange-300',
   },
   {
     id: 'tubacex',
@@ -42,8 +42,8 @@ const brandData = [
     isImg: true,
     description: 'Premium SS Tubes & Pipes',
     href: '/products/tubacex',
-    bg: 'bg-white dark:bg-gray-900',
-    border: 'border-gray-200 dark:border-gray-800 hover:border-green-300 dark:hover:border-green-800',
+    bg: 'bg-white',
+    border: 'border-gray-200 hover:border-green-300',
   },
   {
     id: 'trident',
@@ -52,14 +52,14 @@ const brandData = [
     isImg: true,
     description: 'Air Purification Systems',
     href: '/products/trident',
-    bg: 'bg-white dark:bg-gray-900',
-    border: 'border-gray-200 dark:border-gray-800 hover:border-blue-300 dark:hover:border-blue-800',
+    bg: 'bg-white',
+    border: 'border-gray-200 hover:border-blue-300',
   },
 ];
 
 export default function BrandBar() {
   const { ref, isInView } = useScrollAnimation();
-  const { data: dbBrands } = useBrands();
+  const { brands: dbBrands } = useBrands();
 
   const activeBrands = dbBrands && dbBrands.length > 0
     ? dbBrands.filter(b => b.is_active !== 0).map(b => ({
@@ -68,8 +68,8 @@ export default function BrandBar() {
         logo: b.logo,
         description: b.tagline || b.description || '',
         href: `/products/${b.id}`,
-        bg: 'bg-white dark:bg-gray-900',
-        border: 'border-gray-200 dark:border-gray-800 hover:border-accent dark:hover:border-accent',
+        bg: 'bg-white',
+        border: 'border-gray-200 hover:border-accent',
         isImg: true
       }))
     : brandData;
@@ -120,14 +120,14 @@ export default function BrandBar() {
                       }}
                     />
                     <span
-                      className="hidden text-lg font-black text-gray-700 dark:text-gray-300 tracking-tight"
+                      className="hidden text-lg font-black text-gray-700 tracking-tight"
                     >
                       {brand.name}
                     </span>
                   </div>
 
                   {/* Description */}
-                  <p className="text-[10px] text-gray-400 dark:text-gray-600 font-medium text-center leading-tight group-hover:text-gray-600 dark:group-hover:text-gray-400 transition-colors">
+                  <p className="text-[10px] text-gray-500 font-medium text-center leading-tight group-hover:text-gray-700 transition-colors">
                     {brand.description}
                   </p>
                 </Link>

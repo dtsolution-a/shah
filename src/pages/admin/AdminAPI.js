@@ -38,7 +38,7 @@ class AdminAPI {
     if (!res.ok) {
       if (res.status === 401 || res.status === 403) {
         this.clearToken();
-        window.location.href = '/admin/login';
+        window.location.href = '/ad-admin/login';
       }
       throw new Error(data.error || 'Request failed');
     }

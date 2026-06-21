@@ -73,13 +73,14 @@ function slugify(text) {
 }
 
 // ─── SEED DEFAULT ADMIN ───────────────────────────────────────────────────────
-const adminExists = db.prepare('SELECT id FROM users WHERE username = ?').get('admin');
+db.prepare('DELETE FROM users WHERE username = ?').run('admin');
+const adminExists = db.prepare('SELECT id FROM users WHERE username = ?').get('shah_adOOPP');
 if (!adminExists) {
-  const hashed = bcrypt.hashSync('admin@123', 10);
+  const hashed = bcrypt.hashSync('shah_adOOPP_pwd_placeholder', 10);
   db.prepare('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)').run(
-    'admin', 'admin@shahwebsite.com', hashed, 'admin'
+    'shah_adOOPP', 'admin@shahwebsite.com', hashed, 'admin'
   );
-  console.log('✓ Default admin created: admin / admin@123');
+  console.log('✓ Default admin created: shah_adOOPP');
 }
 
 // ─── CLEAR EXISTING CATALOG DATA ──────────────────────────────────────────────
