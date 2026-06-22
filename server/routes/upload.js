@@ -58,7 +58,7 @@ router.post('/', authenticateToken, (req, res) => {
       return res.status(400).json({ error: 'No file uploaded.' });
     }
 
-    const url = `/uploads/${req.body.folder || 'general'}/${req.file.filename}`;
+    const url = `/api/uploads/${req.body.folder || 'general'}/${req.file.filename}`;
     res.json({
       url,
       filename: req.file.filename,
@@ -73,7 +73,8 @@ router.post('/delete', authenticateToken, (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: 'URL is required.' });
 
-  const filePath = path.join(__dirname, '../..', url);
+  const relativePath = url.replace(/^\/api\//, '/');
+  const filePath = path.join(__dirname, '../..', relativePath);
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
     res.json({ message: 'File deleted successfully.' });

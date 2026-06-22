@@ -4,6 +4,7 @@ import XLSX from 'xlsx';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { blogPosts } from '../src/data/blog.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const baseDir = path.join(__dirname, '../public/images/p2');
@@ -388,5 +389,29 @@ insertTimeline.run('2025', 'Serving 1000+ clients across India with 500+ product
 // ─── SEED SETTINGS ───────────────────────────────────────────────────────────
 console.log('Seeding default settings...');
 db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('indiamart_link', '')").run();
+
+// ─── SEED BLOG POSTS ──────────────────────────────────────────────────────────
+console.log('Seeding blog posts...');
+db.prepare('DELETE FROM blog_posts').run();
+const insertBlogPost = db.prepare(`
+  INSERT OR IGNORE INTO blog_posts (title, slug, excerpt, content, author, image, category, tags, is_published, created_at)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`);
+
+blogPosts.forEach((post) => {
+  insertBlogPost.run(
+    post.title,
+    post.slug,
+    post.excerpt,
+    post.content,
+    post.author || 'Admin',
+    post.cover || '',
+    post.category || 'General',
+    Array.isArray(post.tags) ? post.tags.join(', ') : (post.tags || ''),
+    1,
+    post.date || new Date().toISOString()
+  );
+});
+console.log(`✓ Seeded ${blogPosts.length} blog posts successfully!`);
 
 console.log('\n✅ Database seeding complete!');
