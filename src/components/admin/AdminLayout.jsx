@@ -3,7 +3,7 @@ import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Package, Tag, ShoppingBag, FileText,
   MessageSquare, LogOut, Menu, X, Shield, ChevronDown, Star, Briefcase,
-  Sliders, Layers, Image, UserCheck
+  Sliders, Layers, Image, UserCheck, Calendar, Settings
 } from 'lucide-react';
 import api from '../../pages/admin/AdminAPI';
 
@@ -43,6 +43,8 @@ export default function AdminLayout() {
     { to: '/ad-admin/testimonials', icon: Star, label: 'Testimonials' },
     { to: '/ad-admin/jobs', icon: Briefcase, label: 'Jobs' },
     { to: '/ad-admin/applications', icon: UserCheck, label: 'Applications' },
+    { to: '/ad-admin/timeline', icon: Calendar, label: 'Timeline' },
+    { to: '/ad-admin/settings', icon: Settings, label: 'Settings' },
   ];
 
   const isActive = (path, end) => {

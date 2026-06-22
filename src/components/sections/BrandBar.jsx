@@ -94,13 +94,17 @@ export default function BrandBar() {
           {/* Brand cards */}
           <motion.div
             variants={staggerContainer}
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3"
+            className="flex flex-wrap justify-center gap-3"
           >
             {activeBrands.map((brand) => (
-              <motion.div key={brand.id} variants={staggerItem}>
+              <motion.div
+                key={brand.id}
+                variants={staggerItem}
+                className="w-[calc(50%-6px)] sm:w-[calc(33.333%-8px)] lg:w-[calc(20%-10px)] flex-shrink-0"
+              >
                 <Link
                   to={brand.href}
-                  className={`group flex flex-col items-center justify-center gap-3 px-4 py-5 rounded-2xl border
+                  className={`group flex flex-col items-center justify-center gap-3 px-4 py-5 rounded-2xl border h-full
                     ${brand.bg} ${brand.border}
                     transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5`}
                 >

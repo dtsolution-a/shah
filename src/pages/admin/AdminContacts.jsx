@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Search, X, Mail, Phone, Building, Calendar, Trash2, Check, Eye, EyeOff, ExternalLink } from 'lucide-react';
+import { Search, X, Mail, Phone, Building, Calendar, Trash2, Check, Eye, EyeOff, ExternalLink, Download } from 'lucide-react';
+import * as XLSX from 'xlsx';
 import api from './AdminAPI';
 
 export default function AdminContacts() {
@@ -8,6 +9,40 @@ export default function AdminContacts() {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all'); // all, unread, read
   const [selected, setSelected] = useState(null);
+
+  const handleExportExcel = () => {
+    try {
+      const formatted = contacts.map((c, i) => ({
+        'S.No.': i + 1,
+        'Name': c.name,
+        'Email': c.email,
+        'Phone': c.phone || 'N/A',
+        'Company': c.company || 'N/A',
+        'Subject': c.subject || 'N/A',
+        'Message': c.message || 'N/A',
+        'Read Status': c.is_read ? 'Read' : 'Unread',
+        'Date': new Date(c.created_at).toLocaleString('en-IN'),
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(formatted);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Enquiries');
+      
+      // Auto-fit column widths
+      const maxLens = {};
+      formatted.forEach(row => {
+        Object.keys(row).forEach(key => {
+          const val = String(row[key]);
+          maxLens[key] = Math.max(maxLens[key] || 10, val.length);
+        });
+      });
+      worksheet['!cols'] = Object.keys(maxLens).map(key => ({ wch: Math.min(50, maxLens[key] + 3) }));
+
+      XLSX.writeFile(workbook, `Shah_Enquiries_${new Date().toISOString().split('T')[0]}.xlsx`);
+    } catch (err) {
+      alert('Failed to export enquiries to Excel: ' + err.message);
+    }
+  };
 
   useEffect(() => { loadContacts(); }, []);
 
@@ -64,6 +99,12 @@ export default function AdminContacts() {
           <h1 className="text-2xl font-bold text-gray-900">Enquiries</h1>
           <p className="text-gray-500 mt-1">{contacts.filter(c => !c.is_read).length} unread</p>
         </div>
+        <button
+          onClick={handleExportExcel}
+          className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
+        >
+          <Download className="w-4 h-4" /> Export to Excel
+        </button>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 mb-4">

@@ -203,4 +203,24 @@ router.post('/apply', (req, res) => {
   res.status(201).json({ id: result.lastInsertRowid, message: 'Application submitted successfully!' });
 });
 
+// GET active timeline events
+router.get('/timeline', (req, res) => {
+  try {
+    const list = db.prepare('SELECT * FROM timeline_events WHERE is_active = 1 ORDER BY sort_order ASC, year ASC').all();
+    res.json(list);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET public settings (e.g. indiamart_link)
+router.get('/settings', (req, res) => {
+  try {
+    const item = db.prepare("SELECT value FROM settings WHERE key = 'indiamart_link'").get();
+    res.json({ indiamart_link: item ? item.value : '' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;

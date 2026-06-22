@@ -97,8 +97,11 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Phone</h3>
-                    <a href="tel:+919898989898" className="text-accent text-sm hover:underline block">
-                      +91 98980 00000
+                    <a href="tel:+919825607213" className="text-accent text-sm hover:underline block">
+                      +91 98256 07213
+                    </a>
+                    <a href="tel:+912614890982" className="text-accent text-sm hover:underline block mt-1">
+                      (0261) 4890982-984
                     </a>
                     <p className="text-xs text-gray-400 mt-1">Mon–Sat, 9:00 AM – 6:00 PM</p>
                   </div>
@@ -114,9 +117,6 @@ export default function Contact() {
                     <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Email</h3>
                     <a href="mailto:info@shahgroup.co" className="text-accent text-sm hover:underline block">
                       info@shahgroup.co
-                    </a>
-                    <a href="mailto:shahgroupsurat@gmail.com" className="text-accent text-sm hover:underline block mt-1">
-                      shahgroupsurat@gmail.com
                     </a>
                   </div>
                 </div>

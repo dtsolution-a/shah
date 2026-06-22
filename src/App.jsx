@@ -30,6 +30,8 @@ import AdminHeroSlides from './pages/admin/AdminHeroSlides';
 import AdminSolutions from './pages/admin/AdminSolutions';
 import AdminGallery from './pages/admin/AdminGallery';
 import AdminApplications from './pages/admin/AdminApplications';
+import AdminTimeline from './pages/admin/AdminTimeline';
+import AdminSettings from './pages/admin/AdminSettings';
 import useThemeStore from './store/themeStore';
 
 // Page transition wrapper
@@ -75,7 +77,7 @@ function NotFound() {
 function WhatsAppButton() {
   return (
     <a
-      href="https://wa.me/919898989898?text=Hello%2C%20I%20am%20interested%20in%20your%20products%20and%20services."
+      href="https://wa.me/919825607213?text=Hello%2C%20I%20am%20interested%20in%20your%20products%20and%20services."
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
@@ -165,6 +167,8 @@ export default function App() {
             <Route path="testimonials" element={<AdminTestimonials />} />
             <Route path="jobs" element={<AdminJobs />} />
             <Route path="applications" element={<AdminApplications />} />
+            <Route path="timeline" element={<AdminTimeline />} />
+            <Route path="settings" element={<AdminSettings />} />
           </Route>
         </Routes>
       ) : (

@@ -60,7 +60,7 @@ export default function CTASection() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-gray-900 dark:text-white mb-0.5">Phone</p>
-                  <a href="tel:+919898989898" className="text-sm text-accent hover:underline">+91 98980 00000</a>
+                  <a href="tel:+919825607213" className="text-sm text-accent hover:underline">+91 98256 07213</a>
                 </div>
               </div>
               <div className="flex items-center gap-4">

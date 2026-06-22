@@ -42,7 +42,7 @@ const socialLinks = [
   },
   {
     label: 'WhatsApp',
-    href: 'https://wa.me/919898989898',
+    href: 'https://wa.me/919825607213',
     color: '#25D366',
     icon: (
       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -89,17 +89,17 @@ export default function Footer() {
                   Ring Road, Surat – 395002, Gujarat
                 </span>
               </div>
-              <a href="tel:+919898989898" className="flex items-center gap-3 hover:text-white transition-colors">
+              <a href="tel:+919825607213" className="flex items-center gap-3 hover:text-white transition-colors">
                 <Phone className="w-4 h-4 flex-shrink-0 text-gray-600" />
-                +91 98980 00000
+                +91 98256 07213
+              </a>
+              <a href="tel:+912614890982" className="flex items-center gap-3 hover:text-white transition-colors">
+                <Phone className="w-4 h-4 flex-shrink-0 text-gray-600" />
+                (0261) 4890982-984
               </a>
               <a href="mailto:info@shahgroup.co" className="flex items-center gap-3 hover:text-white transition-colors">
                 <Mail className="w-4 h-4 flex-shrink-0 text-gray-600" />
                 info@shahgroup.co
-              </a>
-              <a href="mailto:shahgroupsurat@gmail.com" className="flex items-center gap-3 hover:text-white transition-colors">
-                <Mail className="w-4 h-4 flex-shrink-0 text-gray-600" />
-                shahgroupsurat@gmail.com
               </a>
             </div>
           </div>

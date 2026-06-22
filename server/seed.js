@@ -371,4 +371,22 @@ insertGallery.run('/images/gallery/team-4.jpg', 'Shah Group Directors', 4);
 insertGallery.run('/images/gallery/team-14.jpg', 'K. G. Shah — Founder', 5);
 insertGallery.run('/images/gallery/teams .png', 'Company Portrait', 6);
 
+// ─── SEED TIMELINE EVENTS ─────────────────────────────────────────────────────
+console.log('Seeding default timeline events...');
+db.prepare('DELETE FROM timeline_events').run();
+const insertTimeline = db.prepare(`
+  INSERT INTO timeline_events (year, event, sort_order, is_active)
+  VALUES (?, ?, ?, 1)
+`);
+insertTimeline.run('1995', 'Shah Enterprise established in Surat, Gujarat', 1);
+insertTimeline.run('2000', 'Became authorized Parker Hannifin distributor for Gujarat region', 2);
+insertTimeline.run('2008', 'Expanded product portfolio with hydraulics and instrumentation', 3);
+insertTimeline.run('2015', 'Added Kaishan air compressors to the portfolio', 4);
+insertTimeline.run('2020', 'Entered clean energy segment — CNG & Hydrogen fueling solutions', 5);
+insertTimeline.run('2025', 'Serving 1000+ clients across India with 500+ product lines', 6);
+
+// ─── SEED SETTINGS ───────────────────────────────────────────────────────────
+console.log('Seeding default settings...');
+db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('indiamart_link', '')").run();
+
 console.log('\n✅ Database seeding complete!');

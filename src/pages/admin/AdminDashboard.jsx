@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Package, Tag, ShoppingBag, FileText, MessageSquare, TrendingUp, AlertCircle, Star, Briefcase, Sliders, Layers, Image, UserCheck } from 'lucide-react';
+import { Package, Tag, ShoppingBag, FileText, MessageSquare, TrendingUp, AlertCircle, Star, Briefcase, Sliders, Layers, Image, UserCheck, Calendar, Settings } from 'lucide-react';
 import api from './AdminAPI';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
     brands: 0, categories: 0, products: 0, blogPosts: 0, unreadContacts: 0, testimonials: 0, jobs: 0,
-    heroSlides: 0, solutions: 0, galleryPhotos: 0, unreadApplications: 0
+    heroSlides: 0, solutions: 0, galleryPhotos: 0, unreadApplications: 0, timelineEvents: 0
   });
   const [loading, setLoading] = useState(true);
 
@@ -15,7 +15,7 @@ export default function AdminDashboard() {
 
   const loadStats = async () => {
     try {
-      const [brands, categories, products, blog, contacts, testimonials, jobs, solutions, gallery, slides, applications] = await Promise.all([
+      const [brands, categories, products, blog, contacts, testimonials, jobs, solutions, gallery, slides, applications, timeline] = await Promise.all([
         api.getBrands(),
         api.getCategories(),
         api.getProducts(),
@@ -27,6 +27,7 @@ export default function AdminDashboard() {
         api.request('GET', '/gallery').catch(() => []),
         api.request('GET', '/hero-slides').catch(() => []),
         api.request('GET', '/applications').catch(() => []),
+        api.getTimelineEvents().catch(() => []),
       ]);
       setStats({
         brands: brands.length,
@@ -40,6 +41,7 @@ export default function AdminDashboard() {
         galleryPhotos: Array.isArray(gallery) ? gallery.length : 0,
         heroSlides: Array.isArray(slides) ? slides.length : 0,
         unreadApplications: Array.isArray(applications) ? applications.filter(a => !a.is_read).length : 0,
+        timelineEvents: Array.isArray(timeline) ? timeline.length : 0,
       });
     } catch (err) {
       console.error('Failed to load stats:', err);
@@ -56,6 +58,7 @@ export default function AdminDashboard() {
     { label: 'Solutions', value: stats.solutions, icon: Layers, color: 'bg-pink-500', href: '/ad-admin/solutions' },
     { label: 'Gallery Photos', value: stats.galleryPhotos, icon: Image, color: 'bg-cyan-500', href: '/ad-admin/gallery' },
     { label: 'Blog Posts', value: stats.blogPosts, icon: FileText, color: 'bg-orange-500', href: '/ad-admin/blog' },
+    { label: 'Timeline Milestones', value: stats.timelineEvents, icon: Calendar, color: 'bg-indigo-600', href: '/ad-admin/timeline' },
     { label: 'Unread Enquiries', value: stats.unreadContacts, icon: MessageSquare, color: 'bg-red-500', href: '/ad-admin/contacts' },
     { label: 'Testimonials', value: stats.testimonials, icon: Star, color: 'bg-yellow-500', href: '/ad-admin/testimonials' },
     { label: 'Jobs', value: stats.jobs, icon: Briefcase, color: 'bg-teal-500', href: '/ad-admin/jobs' },
@@ -141,6 +144,14 @@ export default function AdminDashboard() {
           <a href="/ad-admin/applications" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <UserCheck className="w-5 h-5 text-emerald-500" />
             <span className="text-sm font-medium text-gray-700">View Applications</span>
+          </a>
+          <a href="/ad-admin/timeline" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+            <Calendar className="w-5 h-5 text-indigo-600" />
+            <span className="text-sm font-medium text-gray-700">Manage Timeline</span>
+          </a>
+          <a href="/ad-admin/settings" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
+            <Settings className="w-5 h-5 text-gray-600" />
+            <span className="text-sm font-medium text-gray-700">General Settings</span>
           </a>
           <a href="/" target="_blank" className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-accent hover:bg-accent/5 transition-colors">
             <TrendingUp className="w-5 h-5 text-gray-500" />

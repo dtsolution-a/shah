@@ -16,6 +16,8 @@ import solutionsRoutes from './routes/solutions.js';
 import galleryRoutes from './routes/gallery.js';
 import heroRoutes from './routes/hero.js';
 import applicationsRoutes from './routes/applications.js';
+import timelineRoutes from './routes/timeline.js';
+import settingsRoutes from './routes/settings.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -63,6 +65,8 @@ app.use('/api/solutions', solutionsRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/hero-slides', heroRoutes);
 app.use('/api/applications', applicationsRoutes);
+app.use('/api/timeline', timelineRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

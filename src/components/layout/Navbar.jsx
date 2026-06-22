@@ -7,7 +7,7 @@ import {
   Phone, Mail, Loader2
 } from 'lucide-react';
 import useThemeStore from '../../store/themeStore';
-import { useBrands, useCategories } from '../../hooks/useSiteData';
+import { useBrands, useCategories, usePublicSettings } from '../../hooks/useSiteData';
 
 const navItems = [
   { label: 'Home', href: '/' },
@@ -40,6 +40,7 @@ export default function Navbar() {
   const isDark = theme === 'dark';
   const { brands } = useBrands();
   const { categories } = useCategories();
+  const { settings } = usePublicSettings();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -69,11 +70,11 @@ export default function Navbar() {
     <>
       {/* ── Top bar ── */}
       <div className="hidden lg:flex items-center justify-end bg-[#0f172a] text-white/60 text-xs py-2 px-8 gap-6">
-        <a href="tel:+919898989898" className="flex items-center gap-1.5 hover:text-white transition-colors">
-          <Phone className="w-3 h-3" /> +91 98980 00000
+        <a href="tel:+919825607213" className="flex items-center gap-1.5 hover:text-white transition-colors">
+          <Phone className="w-3 h-3" /> +91 98256 07213
         </a>
-        <a href="mailto:shahgroupsurat@gmail.com" className="flex items-center gap-1.5 hover:text-white transition-colors">
-          <Mail className="w-3 h-3" /> shahgroupsurat@gmail.com
+        <a href="mailto:info@shahgroup.co" className="flex items-center gap-1.5 hover:text-white transition-colors">
+          <Mail className="w-3 h-3" /> info@shahgroup.co
         </a>
       </div>
 
@@ -217,6 +218,24 @@ export default function Navbar() {
               >
                 {isDark ? <Sun className="w-[18px] h-[18px]" /> : <Moon className="w-[18px] h-[18px]" />}
               </button>
+              <a
+                href="/Shah Catalogue 2026 (Actual Size).pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden lg:inline-flex btn-secondary text-sm px-4 py-2.5 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+              >
+                Catalogue
+              </a>
+              {settings?.indiamart_link && (
+                <a
+                  href={settings.indiamart_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hidden lg:inline-flex items-center gap-1 bg-[#f26522] hover:bg-[#d8541a] text-white font-semibold text-sm px-4 py-2.5 rounded-xl transition-colors shadow-sm"
+                >
+                  IndiaMart
+                </a>
+              )}
               <Link to="/contact" className="hidden lg:inline-flex btn-primary text-sm px-5 py-2.5">
                 Contact Us
               </Link>
@@ -256,10 +275,28 @@ export default function Navbar() {
                   </NavLink>
                 ))}
                 <div className="pt-3 mt-2 border-t border-gray-200 dark:border-gray-800 space-y-2">
+                  <a
+                    href="/Shah Catalogue 2026 (Actual Size).pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex btn-secondary w-full justify-center text-sm py-3 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 rounded-xl"
+                  >
+                    Catalogue
+                  </a>
+                  {settings?.indiamart_link && (
+                    <a
+                      href={settings.indiamart_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex bg-[#f26522] hover:bg-[#d8541a] text-white font-semibold w-full justify-center text-sm py-3 rounded-xl transition-colors"
+                    >
+                      IndiaMart
+                    </a>
+                  )}
                   <Link to="/contact" className="btn-primary w-full justify-center">Contact Us</Link>
                   <div className="flex flex-col gap-2 text-xs text-gray-500 pt-1">
-                    <a href="tel:+919898989898" className="flex items-center gap-2 px-1"><Phone className="w-3.5 h-3.5" /> +91 98980 00000</a>
-                    <a href="mailto:shahgroupsurat@gmail.com" className="flex items-center gap-2 px-1"><Mail className="w-3.5 h-3.5" /> shahgroupsurat@gmail.com</a>
+                    <a href="tel:+919825607213" className="flex items-center gap-2 px-1"><Phone className="w-3.5 h-3.5" /> +91 98256 07213</a>
+                    <a href="mailto:info@shahgroup.co" className="flex items-center gap-2 px-1"><Mail className="w-3.5 h-3.5" /> info@shahgroup.co</a>
                   </div>
                 </div>
               </div>

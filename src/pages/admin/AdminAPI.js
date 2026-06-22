@@ -145,6 +145,17 @@ class AdminAPI {
   markApplicationRead(id, isRead) {
     return this.request('PATCH', `/applications/${id}/read`, { is_read: isRead });
   }
+
+  // Timeline Events
+  getTimelineEvents() { return this.request('GET', '/timeline'); }
+  getTimelineEvent(id) { return this.request('GET', `/timeline/${id}`); }
+  createTimelineEvent(data) { return this.request('POST', '/timeline', data); }
+  updateTimelineEvent(id, data) { return this.request('PUT', `/timeline/${id}`, data); }
+  deleteTimelineEvent(id) { return this.request('DELETE', `/timeline/${id}`); }
+
+  // Settings
+  getSettings() { return this.request('GET', '/settings'); }
+  updateSettings(data) { return this.request('PUT', '/settings', data); }
 }
 
 const api = new AdminAPI();

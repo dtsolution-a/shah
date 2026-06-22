@@ -627,3 +627,81 @@ export function useHeroSlides() {
   return { data, slides: data, loading };
 }
 
+// Hook to fetch active timeline events (public)
+export function useTimeline() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [version, setVersion] = useState(0);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    const handler = () => setVersion(v => v + 1);
+    listeners.add(handler);
+    return () => { listeners.delete(handler); mountedRef.current = false; };
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchWithTimeout(bustCache(`${API}/timeline`))
+      .then(r => { if (!r.ok) throw new Error('Failed'); return r.json(); })
+      .then(d => {
+        if (mountedRef.current) {
+          setData(d || []);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (mountedRef.current) {
+          // Fallback to static timeline from About.jsx if API fails
+          setData([
+            { year: '1995', event: 'Shah Enterprise established in Surat, Gujarat' },
+            { year: '2000', event: 'Became authorized Parker Hannifin distributor for Gujarat region' },
+            { year: '2008', event: 'Expanded product portfolio with hydraulics and instrumentation' },
+            { year: '2015', event: 'Added Kaishan air compressors to the portfolio' },
+            { year: '2020', event: 'Entered clean energy segment — CNG & Hydrogen fueling solutions' },
+            { year: '2025', event: 'Serving 1000+ clients across India with 500+ product lines' },
+          ]);
+          setLoading(false);
+        }
+      });
+  }, [version]);
+
+  return { timeline: data, loading };
+}
+
+// Hook to fetch public settings (e.g. indiamart_link)
+export function usePublicSettings() {
+  const [data, setData] = useState({ indiamart_link: '' });
+  const [loading, setLoading] = useState(true);
+  const [version, setVersion] = useState(0);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    const handler = () => setVersion(v => v + 1);
+    listeners.add(handler);
+    return () => { listeners.delete(handler); mountedRef.current = false; };
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchWithTimeout(bustCache(`${API}/settings`))
+      .then(r => { if (!r.ok) throw new Error('Failed'); return r.json(); })
+      .then(d => {
+        if (mountedRef.current) {
+          setData(d || { indiamart_link: '' });
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (mountedRef.current) {
+          setData({ indiamart_link: '' });
+          setLoading(false);
+        }
+      });
+  }, [version]);
+
+  return { settings: data, loading };
+}
+

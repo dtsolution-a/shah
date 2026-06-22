@@ -6,15 +6,8 @@ import {
 } from 'lucide-react';
 import { useScrollAnimation, fadeUpVariants, staggerContainer, staggerItem, slideInLeft, slideInRight } from '../hooks/useScrollAnimation';
 import CTASection from '../components/sections/CTASection';
+import { useTimeline } from '../hooks/useSiteData';
 
-const timeline = [
-  { year: '1995', event: 'Shah Enterprise established in Surat, Gujarat' },
-  { year: '2000', event: 'Became authorized Parker Hannifin distributor for Gujarat region' },
-  { year: '2008', event: 'Expanded product portfolio with hydraulics and instrumentation' },
-  { year: '2015', event: 'Added Kaishan air compressors to the portfolio' },
-  { year: '2020', event: 'Entered clean energy segment — CNG & Hydrogen fueling solutions' },
-  { year: '2025', event: 'Serving 1000+ clients across India with 500+ product lines' },
-];
 
 const values = [
   { icon: Heart, title: 'Ethics Over Profit', description: 'Finances are important, but not at the expense of ethics. Success comes from faith and effort.' },
@@ -29,6 +22,7 @@ export default function About() {
   const { ref, isInView } = useScrollAnimation();
   const { ref: timelineRef, isInView: timelineInView } = useScrollAnimation();
   const { ref: valuesRef, isInView: valuesInView } = useScrollAnimation();
+  const { timeline } = useTimeline();
 
   return (
     <div>
