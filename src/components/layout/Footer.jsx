@@ -178,11 +178,23 @@ export default function Footer() {
 
       {/* Divider */}
       <div className="border-t border-gray-900">
-        <div className="container-wide py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-gray-600">
-            © 2026 Shah Engineers & Consultants Pvt. Ltd. All rights reserved.
-          </p>
-          <p className="text-xs text-gray-700">
+        <div className="container-wide py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col items-center md:items-start gap-1">
+            <p className="text-xs text-gray-600 text-center md:text-left">
+              © 2026 Shah Engineers & Consultants Pvt. Ltd. All rights reserved.
+            </p>
+            <p className="text-xs text-gray-700 text-center md:text-left">
+              Designed & Developed by <a href="https://medialooptech.com" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline font-semibold">Medialoop Tech Solutions</a>
+            </p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-4 text-xs text-gray-600 font-medium">
+            <Link to="/terms" className="hover:text-white transition-colors">Terms & Conditions</Link>
+            <span className="text-gray-800">|</span>
+            <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <span className="text-gray-800">|</span>
+            <Link to="/sitemap" className="hover:text-white transition-colors">Sitemap</Link>
+          </div>
+          <p className="text-xs text-gray-700 text-center md:text-right">
             Surat, Gujarat, India
           </p>
         </div>

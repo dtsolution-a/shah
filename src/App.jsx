@@ -16,6 +16,9 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Career from './pages/Career';
 import Contact from './pages/Contact';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
+import Sitemap from './pages/Sitemap';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -189,6 +192,9 @@ export default function App() {
                 <Route path="/blog/:slug" element={<PageTransition><BlogPost /></PageTransition>} />
                 <Route path="/career" element={<PageTransition><Career /></PageTransition>} />
                 <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+                <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
+                <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
+                <Route path="/sitemap" element={<PageTransition><Sitemap /></PageTransition>} />
                 <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
               </Routes>
             </AnimatePresence>

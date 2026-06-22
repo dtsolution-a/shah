@@ -17,6 +17,15 @@ const defaultForm = {
 
 const JOB_TYPES = ['Full-time', 'Part-time', 'Internship', 'Contract'];
 
+const formatLink = (url) => {
+  if (!url) return '';
+  const trimmed = url.trim();
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('mailto:') || trimmed.startsWith('tel:')) {
+    return trimmed;
+  }
+  return `https://${trimmed}`;
+};
+
 export default function AdminJobs() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -134,7 +143,7 @@ export default function AdminJobs() {
                         </span>
                       )}
                       {job.apply_url && (
-                        <a href={job.apply_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-accent hover:underline">
+                        <a href={formatLink(job.apply_url)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-accent hover:underline">
                           <Link className="w-3 h-3" />Apply Link
                         </a>
                       )}

@@ -13,6 +13,18 @@ const perks = [
   { icon: Clock, text: 'Stable, long-term employment' },
 ];
 
+export function formatExternalLink(url) {
+  if (!url) return '';
+  const trimmed = url.trim();
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('mailto:') || trimmed.startsWith('tel:')) {
+    return trimmed;
+  }
+  if (trimmed.startsWith('/') || trimmed.startsWith('#')) {
+    return trimmed;
+  }
+  return `https://${trimmed}`;
+}
+
 export default function Career() {
   const { ref, isInView } = useScrollAnimation();
   const { jobs, loading } = useJobs();
@@ -217,7 +229,7 @@ export default function Career() {
                     <div className="flex-shrink-0">
                       {job.apply_url ? (
                         <a
-                          href={job.apply_url}
+                          href={formatExternalLink(job.apply_url)}
                           target={job.apply_url.startsWith('mailto') ? '_self' : '_blank'}
                           rel="noopener noreferrer"
                           className="btn-primary py-2.5 px-5 text-sm"
