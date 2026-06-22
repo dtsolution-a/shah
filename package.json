@@ -13,7 +13,8 @@
         "seed": "node server/seed.js",
         "start": "node server/index.js",
         "seed:prod": "node server/seed.js",
-        "postinstall": "npm rebuild better-sqlite3 --build-from-source"
+        "postinstall": "npm rebuild better-sqlite3 --build-from-source",
+        "rebuild-db": "npm rebuild better-sqlite3 --build-from-source"
     },
     "dependencies": {
         "@radix-ui/react-dialog": "^1.1.16",
